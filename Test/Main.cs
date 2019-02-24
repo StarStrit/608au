@@ -175,7 +175,10 @@ namespace Test
             for (int i = 0; i < 7; i++)
                 dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.Gainsboro;
             for (int i = 1; i < 7; i++)
+            {
                 dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Gainsboro;
+                dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
+            }
             dataGridView1.Rows[0].Cells[0].Value = "Время";
             dataGridView1.Rows[0].Cells[1].Value = "09:00-10:35";
             dataGridView1.Rows[0].Cells[2].Value = "10:45-12:20";
@@ -266,10 +269,12 @@ namespace Test
                                                 raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\">") + 15, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\">") - 27);
                                                 raspstr = raspstr.Replace("    ","\n"); // заменя пробелов на переход новой строки
                                                 raspstr = raspstr.Replace("...", ""); // замена троеточия на пустой символ
-                                                raspstr = raspstr.Trim(); // обрезка строки
-                                                raspstr = raspstr.Replace("пр.", "\n-пр.-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лаб.-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лек.-\n");
+                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
+                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
+                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
+                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
+                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
+                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
@@ -305,10 +310,12 @@ namespace Test
                                                 raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\"> ") + 16, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\"> ") - 28);
                                                 raspstr = raspstr.Replace("    ", "\n");
                                                 raspstr = raspstr.Replace("...", "");
-                                                raspstr = raspstr.Trim();
-                                                raspstr = raspstr.Replace("пр.", "\n-пр.-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лаб.-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лек.-\n");
+                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
+                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
+                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
+                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
+                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
+                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
@@ -334,7 +341,10 @@ namespace Test
             for (int i = 0; i < 7; i++)
                 dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.Gainsboro;
             for (int i = 1; i < 7; i++)
+            {
                 dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Gainsboro;
+                dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
+            }
             dataGridView1.Rows[0].Cells[0].Value = "Время";
             dataGridView1.Rows[0].Cells[1].Value = "09:00-10:35";
             dataGridView1.Rows[0].Cells[2].Value = "10:45-12:20";
@@ -425,10 +435,12 @@ namespace Test
                                                 raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\">") + 15, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\">") - 27);
                                                 raspstr = raspstr.Replace("    ", "\n");
                                                 raspstr = raspstr.Replace("...", "");
-                                                raspstr = raspstr.Trim();
-                                                raspstr = raspstr.Replace("пр.", "\n-пр.-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лаб.-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лек.-\n");
+                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
+                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
+                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
+                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
+                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
+                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
@@ -464,10 +476,12 @@ namespace Test
                                                 raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\"> ") + 16, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\"> ") - 28);
                                                 raspstr = raspstr.Replace("    ", "\n");
                                                 raspstr = raspstr.Replace("...", "");
-                                                raspstr = raspstr.Trim();
-                                                raspstr = raspstr.Replace("пр.", "\n-пр.-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лаб.-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лек.-\n");
+                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
+                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
+                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
+                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
+                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
+                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
@@ -649,12 +663,10 @@ namespace Test
 // Подумать над локальном сохранением расписаний по последним датам изменения
 // Сделать справку - описание работы программы
 // Сделать уведомление о наличии нового расписания
-// Сделать автомат. подстройку высоты окна под таблицуы
 // Добавить Артефакт и отзыв о программе (форма для заполнения со звездами, пожеланиями и отправкой мне на почту)
 // Сделать загрузку программы красивее, подумать о Flat стиле
-// Сделать кнопку - "Проверка обновлений"
-// Сделать строки одинаковой ширины
 // "Неизвестный издатель" при установке
+// Сделать сканирования колледжа правильным (нет типа пары - пр., лек., лаб.)
 
 // !Оптимизация!
 // Программа виснет при проверки соединения

@@ -63,7 +63,6 @@
             this.about_menu = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оставитьОтзывToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.проверкаОбновленийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.graphic608 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -145,7 +144,7 @@
             this.dataGridView1.ShowCellToolTips = false;
             this.dataGridView1.ShowEditingIcon = false;
             this.dataGridView1.ShowRowErrors = false;
-            this.dataGridView1.Size = new System.Drawing.Size(774, 345);
+            this.dataGridView1.Size = new System.Drawing.Size(660, 408);
             this.dataGridView1.TabIndex = 4;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellMouseEnter);
@@ -314,7 +313,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(774, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(660, 26);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -366,9 +365,8 @@
             this.справкаToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.справкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.about_menu,
-            this.оставитьОтзывToolStripMenuItem,
             this.оПрограммеToolStripMenuItem,
-            this.проверкаОбновленийToolStripMenuItem});
+            this.оставитьОтзывToolStripMenuItem});
             this.справкаToolStripMenuItem.Name = "справкаToolStripMenuItem";
             this.справкаToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
             this.справкаToolStripMenuItem.Text = "Справка";
@@ -379,7 +377,7 @@
             this.about_menu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.about_menu.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.about_menu.Name = "about_menu";
-            this.about_menu.Size = new System.Drawing.Size(206, 22);
+            this.about_menu.Size = new System.Drawing.Size(170, 22);
             this.about_menu.Text = "Авторы";
             this.about_menu.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.about_menu.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
@@ -390,7 +388,7 @@
             this.оПрограммеToolStripMenuItem.Enabled = false;
             this.оПрограммеToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             // 
@@ -398,15 +396,8 @@
             // 
             this.оставитьОтзывToolStripMenuItem.Enabled = false;
             this.оставитьОтзывToolStripMenuItem.Name = "оставитьОтзывToolStripMenuItem";
-            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.оставитьОтзывToolStripMenuItem.Text = "Оставить отзыв";
-            // 
-            // проверкаОбновленийToolStripMenuItem
-            // 
-            this.проверкаОбновленийToolStripMenuItem.Enabled = false;
-            this.проверкаОбновленийToolStripMenuItem.Name = "проверкаОбновленийToolStripMenuItem";
-            this.проверкаОбновленийToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.проверкаОбновленийToolStripMenuItem.Text = "Проверка обновлений";
             // 
             // graphic608
             // 
@@ -442,7 +433,7 @@
             this.pictureBox1.ErrorImage = global::Test.Properties.Resources.status_connected;
             this.pictureBox1.Image = global::Test.Properties.Resources.status_disconnected;
             this.pictureBox1.InitialImage = global::Test.Properties.Resources.status_connected;
-            this.pictureBox1.Location = new System.Drawing.Point(744, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(630, 2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(22, 22);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -471,7 +462,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(774, 405);
+            this.ClientSize = new System.Drawing.Size(660, 468);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.graphic608);
@@ -481,6 +472,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -527,7 +519,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.ToolStripMenuItem оставитьОтзывToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem проверкаОбновленийToolStripMenuItem;
     }
 }
 
