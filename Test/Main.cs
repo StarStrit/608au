@@ -54,7 +54,7 @@ namespace Test
              * Properties.Settings.Default.Save();
              * MessageBox.Show(Properties.Settings.Default.starter.ToString(), "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Warning);*/
         }
-        private void Main_Load(object sender, EventArgs e)
+        private void ESPPForm_Shown(object sender, EventArgs e)
         {
             timer1.Start(); // запускаем таймер для постоянной проверки соединения с сайтом
             try
@@ -609,7 +609,7 @@ namespace Test
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About about_Form = new About();
-            about_Form.Show();
+            about_Form.ShowDialog();
         }
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {

@@ -345,6 +345,7 @@
             this.проверитьОбновленияРасписанияToolStripMenuItem.Name = "проверитьОбновленияРасписанияToolStripMenuItem";
             this.проверитьОбновленияРасписанияToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
             this.проверитьОбновленияРасписанияToolStripMenuItem.Text = "Обновление расписания";
+            this.проверитьОбновленияРасписанияToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
             // 
             // загрузитьРасписаниеНаКомпьютерToolStripMenuItem
             // 
@@ -377,7 +378,7 @@
             this.about_menu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.about_menu.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.about_menu.Name = "about_menu";
-            this.about_menu.Size = new System.Drawing.Size(170, 22);
+            this.about_menu.Size = new System.Drawing.Size(180, 22);
             this.about_menu.Text = "Авторы";
             this.about_menu.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.about_menu.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
@@ -388,16 +389,18 @@
             this.оПрограммеToolStripMenuItem.Enabled = false;
             this.оПрограммеToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.оПрограммеToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
             // 
             // оставитьОтзывToolStripMenuItem
             // 
             this.оставитьОтзывToolStripMenuItem.Enabled = false;
             this.оставитьОтзывToolStripMenuItem.Name = "оставитьОтзывToolStripMenuItem";
-            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.оставитьОтзывToolStripMenuItem.Text = "Оставить отзыв";
+            this.оставитьОтзывToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
             // 
             // graphic608
             // 
@@ -479,9 +482,10 @@
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(633, 422);
             this.Name = "ESPPForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Расписание кафедры ЭСППиСХ";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_FormClosed);
-            this.Load += new System.EventHandler(this.Main_Load);
+            this.Shown += new System.EventHandler(this.ESPPForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

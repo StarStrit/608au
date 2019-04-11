@@ -47,6 +47,8 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel5 = new System.Windows.Forms.LinkLabel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -73,9 +75,9 @@
             this.label2.ForeColor = System.Drawing.SystemColors.WindowText;
             this.label2.Location = new System.Drawing.Point(4, 159);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(173, 16);
+            this.label2.Size = new System.Drawing.Size(87, 16);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Разработчик: Зеленков А.В.";
+            this.label2.Text = "Разработчик:";
             // 
             // label3
             // 
@@ -136,6 +138,7 @@
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.linkLabel1.UseCompatibleTextRendering = true;
             this.linkLabel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.linkLabel1_MouseDown);
+            this.linkLabel1.MouseEnter += new System.EventHandler(this.LinkLabel1_MouseEnter);
             // 
             // prompt
             // 
@@ -188,6 +191,7 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(7, 8);
             this.pictureBox1.Name = "pictureBox1";
@@ -195,6 +199,8 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PictureBox1_MouseClick);
+            this.pictureBox1.MouseEnter += new System.EventHandler(this.PictureBox1_MouseEnter);
             // 
             // label10
             // 
@@ -257,6 +263,28 @@
             this.linkLabel4.UseCompatibleTextRendering = true;
             this.linkLabel4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.linkLabel4_MouseClick);
             // 
+            // linkLabel5
+            // 
+            this.linkLabel5.AutoEllipsis = true;
+            this.linkLabel5.AutoSize = true;
+            this.linkLabel5.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.linkLabel5.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkLabel5.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkLabel5.Location = new System.Drawing.Point(88, 157);
+            this.linkLabel5.Name = "linkLabel5";
+            this.linkLabel5.Size = new System.Drawing.Size(90, 21);
+            this.linkLabel5.TabIndex = 22;
+            this.linkLabel5.TabStop = true;
+            this.linkLabel5.Text = "Зеленков А.В.";
+            this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.linkLabel5.UseCompatibleTextRendering = true;
+            this.linkLabel5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LinkLabel5_MouseClick);
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTip1.ToolTipTitle = "Подсказка";
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -264,6 +292,7 @@
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(242, 364);
+            this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.linkLabel4);
             this.Controls.Add(this.linkLabel3);
             this.Controls.Add(this.linkLabel2);
@@ -288,6 +317,7 @@
             this.MinimizeBox = false;
             this.Name = "About";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Автор";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.About_Load);
@@ -318,5 +348,7 @@
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.LinkLabel linkLabel3;
         private System.Windows.Forms.LinkLabel linkLabel4;
+        private System.Windows.Forms.LinkLabel linkLabel5;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
