@@ -28,7 +28,7 @@
     <PublisherName>TestLabSoft</PublisherName>
     <MinimumRequiredVersion>0.9.9.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>0.9.9.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -57,7 +57,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resource\calendar-clock-icon_34472.ico</ApplicationIcon>
+    <ApplicationIcon>608au.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -175,7 +175,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resource\calendar-clock-icon_34472.ico" />
+    <None Include="Resource\608au.ico" />
+    <Content Include="608au.ico" />
     <None Include="Resource\VS_icon.png" />
     <None Include="Resource\vsgutu_icon.png" />
     <Resource Include="Resource\status_disconnected.png" />
