@@ -9,7 +9,6 @@ namespace Test
     public partial class Form608 : Form
     {
         private Button graphic_Form608; // создание глобальной закрытой ссылки на кнопку
-        private string web_esstuF; // для данных сайта
         private int nedely_rasp; // для номера недели
         #region Унаследование для DoubleBuffered - включение двойной буфферизации для быстрой перерисовки dataGridView1
         void SetDoubleBuffered2(Control c, bool value)
@@ -19,10 +18,9 @@ namespace Test
                 pi.SetValue(c, value, null);
         }
         #endregion
-        public Form608(Button graphic_Main, string web_esstu, int nedelyrasp) // получаем исходную ссылку на кнопку
+        public Form608(Button graphic_Main, int nedelyrasp) // получаем исходную ссылку на кнопку
         {
             graphic_Form608 = graphic_Main; // принимаем ссылку на кнопку
-            web_esstuF = web_esstu; // получаем текстовые данные
             nedely_rasp = nedelyrasp; // получаем номер недели
             InitializeComponent();
         }
@@ -158,13 +156,15 @@ namespace Test
                 }
             #endregion
             #region Заполняем график занятий 608 ау.
-            // StreamReader filehtm = new StreamReader("caf39.txt");
-            TextReader skan_web = new StringReader(web_esstuF);
+            string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+            string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+            StreamReader rasp_reader = new StreamReader(file_rasp);
+
             string bufferfile = "";
             string NamePrep;
             while (bufferfile != null)
             {
-                bufferfile = skan_web.ReadLine();
+                bufferfile = rasp_reader.ReadLine();
                 if ((bufferfile != null) && (bufferfile.IndexOf("#ff00ff\"> ") >= 0))
                 {
                     // сокращаем имя препода
@@ -175,11 +175,11 @@ namespace Test
                     for (int i = 3; i <= 8; i++)
                     {
                         while (bufferfile.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1)
-                            bufferfile = skan_web.ReadLine();
-                        bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
+                        bufferfile = rasp_reader.ReadLine();
                         for (int j = 1; j < 7; j++)
                         {
-                            bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                             // если пара в 608б
                             if (bufferfile.IndexOf("а.608б") >= 0)
                                 if (dataGridView2.Rows[i].Cells[j].Value == null)
@@ -193,20 +193,20 @@ namespace Test
                                     dataGridView2.Rows[i].Cells[j].Value = NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2) + "\n608а";
                                 else
                                     dataGridView2.Rows[i].Cells[j].Value += "\n-------------------\n" + NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2) + "\n608а";
-                            bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                         }
                     }
                     #endregion
                     #region 2 неделя
-                    bufferfile = skan_web.ReadLine();
+                    bufferfile = rasp_reader.ReadLine();
                     for (int i = 12; i <= 17; i++)
                     {
                         while (bufferfile.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
-                            bufferfile = skan_web.ReadLine();
-                        bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
+                        bufferfile = rasp_reader.ReadLine();
                         for (int j = 1; j < 7; j++)
                         {
-                            bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                             // если пара в 608б
                             if (bufferfile.IndexOf("а.608б") >= 0)
                                 if (dataGridView2.Rows[i].Cells[j].Value == null)
@@ -220,7 +220,7 @@ namespace Test
                                     dataGridView2.Rows[i].Cells[j].Value = NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2) + "\n608а";
                                 else
                                     dataGridView2.Rows[i].Cells[j].Value += "\n-------------------\n" + NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2) + "\n608а";
-                            bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                         }
                     }
                     #endregion
@@ -228,7 +228,7 @@ namespace Test
             }
             dataGridView2.Enabled = true;
             SetDoubleBuffered2(dataGridView2, true);
-            skan_web.Dispose();
+            rasp_reader.Dispose();
             #endregion
         }
         private void Form608_FormClosed(object sender, FormClosedEventArgs e)

@@ -104,6 +104,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimumSize = new System.Drawing.Size(608, 400);
             this.Name = "Form608";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Расписание 608 аудитории";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form608_FormClosed);
             this.Load += new System.EventHandler(this.Form608_Load);

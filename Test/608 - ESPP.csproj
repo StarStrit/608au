@@ -24,12 +24,13 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://testlabsoft.ru.xsph.ru/</InstallUrl>
     <UpdateUrl>http://testlabsoft.ru.xsph.ru/</UpdateUrl>
+    <SupportUrl>http://testlabsoft.ru.xsph.ru/</SupportUrl>
     <ProductName>608au</ProductName>
-    <PublisherName>TestLabSoft</PublisherName>
+    <PublisherName>AlexSoft</PublisherName>
     <MinimumRequiredVersion>0.9.9.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>0.9.9.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -79,6 +80,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

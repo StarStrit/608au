@@ -56,7 +56,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.расписаниеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.проверитьОбновленияРасписанияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.check_update = new System.Windows.Forms.ToolStripMenuItem();
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.удалитьРасписаниеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,6 +68,8 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.start_prog = new System.Windows.Forms.Label();
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -322,7 +324,7 @@
             this.расписаниеToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.расписаниеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem,
-            this.проверитьОбновленияРасписанияToolStripMenuItem});
+            this.check_update});
             this.расписаниеToolStripMenuItem.Enabled = false;
             this.расписаниеToolStripMenuItem.Name = "расписаниеToolStripMenuItem";
             this.расписаниеToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
@@ -332,34 +334,33 @@
             // сформироватьГрафикЗанятийДляПечатиToolStripMenuItem
             // 
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Name = "сформироватьГрафикЗанятийДляПечатиToolStripMenuItem";
-            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
-            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Text = "Сформировать график занятий";
+            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Size = new System.Drawing.Size(307, 22);
+            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Text = "Сформировать график занятий в Word";
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Click += new System.EventHandler(this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem_Click);
             // 
-            // проверитьОбновленияРасписанияToolStripMenuItem
+            // check_update
             // 
-            this.проверитьОбновленияРасписанияToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.check_update.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem,
             this.удалитьРасписаниеToolStripMenuItem});
-            this.проверитьОбновленияРасписанияToolStripMenuItem.Enabled = false;
-            this.проверитьОбновленияРасписанияToolStripMenuItem.Name = "проверитьОбновленияРасписанияToolStripMenuItem";
-            this.проверитьОбновленияРасписанияToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
-            this.проверитьОбновленияРасписанияToolStripMenuItem.Text = "Обновление расписания";
-            this.проверитьОбновленияРасписанияToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
+            this.check_update.Enabled = false;
+            this.check_update.Name = "check_update";
+            this.check_update.Size = new System.Drawing.Size(307, 22);
+            this.check_update.Text = "Обновление расписания";
             // 
             // загрузитьРасписаниеНаКомпьютерToolStripMenuItem
             // 
-            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Enabled = false;
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Name = "загрузитьРасписаниеНаКомпьютерToolStripMenuItem";
-            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Text = "Загрузить/обновить расписание";
+            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Text = "Обновить расписание";
+            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьРасписаниеНаКомпьютерToolStripMenuItem_Click);
             // 
             // удалитьРасписаниеToolStripMenuItem
             // 
-            this.удалитьРасписаниеToolStripMenuItem.Enabled = false;
             this.удалитьРасписаниеToolStripMenuItem.Name = "удалитьРасписаниеToolStripMenuItem";
-            this.удалитьРасписаниеToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.удалитьРасписаниеToolStripMenuItem.Text = "Удалить расписание";
+            this.удалитьРасписаниеToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.удалитьРасписаниеToolStripMenuItem.Text = "Удалить всё расписание";
+            this.удалитьРасписаниеToolStripMenuItem.Click += new System.EventHandler(this.УдалитьРасписаниеToolStripMenuItem_Click);
             // 
             // справкаToolStripMenuItem
             // 
@@ -378,7 +379,7 @@
             this.about_menu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.about_menu.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.about_menu.Name = "about_menu";
-            this.about_menu.Size = new System.Drawing.Size(170, 22);
+            this.about_menu.Size = new System.Drawing.Size(180, 22);
             this.about_menu.Text = "Авторы";
             this.about_menu.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.about_menu.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
@@ -389,7 +390,7 @@
             this.оПрограммеToolStripMenuItem.Enabled = false;
             this.оПрограммеToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.оПрограммеToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
@@ -398,7 +399,7 @@
             // 
             this.оставитьОтзывToolStripMenuItem.Enabled = false;
             this.оставитьОтзывToolStripMenuItem.Name = "оставитьОтзывToolStripMenuItem";
-            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.оставитьОтзывToolStripMenuItem.Text = "Оставить отзыв";
             this.оставитьОтзывToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
             // 
@@ -458,6 +459,22 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
             // 
+            // start_prog
+            // 
+            this.start_prog.AutoSize = true;
+            this.start_prog.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.start_prog.ForeColor = System.Drawing.SystemColors.ActiveCaption;
+            this.start_prog.Location = new System.Drawing.Point(374, 5);
+            this.start_prog.Name = "start_prog";
+            this.start_prog.Size = new System.Drawing.Size(77, 16);
+            this.start_prog.TabIndex = 14;
+            this.start_prog.Text = "Запусков: 0";
+            // 
+            // timer2
+            // 
+            this.timer2.Interval = 21000;
+            this.timer2.Tick += new System.EventHandler(this.Timer2_Tick);
+            // 
             // ESPPForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -466,6 +483,7 @@
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(660, 468);
+            this.Controls.Add(this.start_prog);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.graphic608);
@@ -510,7 +528,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.ToolStripMenuItem проверитьОбновленияРасписанияToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem check_update;
         private System.Windows.Forms.ToolStripMenuItem загрузитьРасписаниеНаКомпьютерToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem удалитьРасписаниеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
@@ -523,6 +541,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.ToolStripMenuItem оставитьОтзывToolStripMenuItem;
+        private System.Windows.Forms.Label start_prog;
+        private System.Windows.Forms.Timer timer2;
     }
 }
 

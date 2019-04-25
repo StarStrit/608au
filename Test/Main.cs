@@ -10,9 +10,8 @@ namespace Test
 {
     public partial class ESPPForm : Form
     {
-        private string web_esstu = ""; // закрытая строковая переменная для чтения и записи html страниц
-        private int nedely_rasp = 0; // закрытая строковая переменная для хранения номера недели
-        #region Грузим статусы сети: в сети; нет сети; обновление расписания, проверка
+        private int nedely_rasp = 0; // для хранения номера недели
+        #region Грузим статусы сети: в сети, нет сети
         private Bitmap status_con = new Bitmap(Properties.Resources.status_connected);
         private Bitmap status_dis = new Bitmap(Properties.Resources.status_disconnected);
         #endregion
@@ -47,124 +46,214 @@ namespace Test
         {
             comboBox1.Items.Clear();
             comboBox2.Items.Clear();
-            web_esstu = ""; // очистка строки данных веб-страницы
-            // File.Delete("caf39.txt");
-            /* Работает с настройками программы
-             * Properties.Settings.Default.starter++;
-             * Properties.Settings.Default.Save();
-             * MessageBox.Show(Properties.Settings.Default.starter.ToString(), "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Warning);*/
         }
         private void ESPPForm_Shown(object sender, EventArgs e)
         {
-            timer1.Start(); // запускаем таймер для постоянной проверки соединения с сайтом
-            try
+            timer1.Start(); // таймер для проверки соединения с сайтом
+            timer2.Start(); // таймер для обновления расписания
+            if (Properties.Settings.Default.starter == 0 || Properties.Settings.Default.number_nedel == "0") // если запускаем программу первый раз или настройки стандартные
             {
-                HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
-                HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse(); // проверка соединения с сайтом ВСГУТУ
-                if (HttpStatusCode.OK == test_response.StatusCode)
+                try
                 {
-                    #region Узнаем номер кафедры для ссылки
-                    WebClient CafClient = new WebClient();
-                    Stream CafStream = CafClient.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
-                    StreamReader CafReader = new StreamReader(CafStream, System.Text.Encoding.Default);
-                    string Cafstr = "";
-                    string NomerCaf = ""; // нужня для хранения продолжения ссылки (номера кафедры)
-                    while (!CafReader.EndOfStream)
+                    HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                    HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse(); // проверка соединения с сайтом ВСГУТУ
+
+                    if (HttpStatusCode.OK == test_response.StatusCode) // если соединение установлено
                     {
-                        Cafstr = CafReader.ReadLine();
-                        if (Cafstr.IndexOf("Электроснабжение промышленных предприятий") >= 0)
+                        #region Узнаем номер кафедры
+                        WebClient CafClient = new WebClient();
+                        Stream CafStream = CafClient.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
+                        StreamReader CafReader = new StreamReader(CafStream, System.Text.Encoding.Default);
+                        string Cafstr = "";
+                        string NomerCaf = ""; // нужна для хранения продолжения ссылки (номера кафедры)
+                        while (!CafReader.EndOfStream)
                         {
-                            NomerCaf = Cafstr.Substring(Cafstr.IndexOf("<a href=\"") + 9, Cafstr.IndexOf("<a href=\""));
-                            break;
-                        }
-                        else if (CafReader.EndOfStream)
-                        {
-                            MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nРасписание не доступно", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
-                    }
-                    CafClient.Dispose(); CafStream.Close(); CafReader.Close();
-                    #endregion
-                    #region Загрузка рассписания кафедры
-                    HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + NomerCaf + ".htm"); // передача адреса строки
-                    HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse(); // отправка запроса и получение ответа
-                    Stream RaspStr = RaspRes.GetResponseStream(); // получение ответа ввиде потока информации
-                    StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default); // создание потоковой переменной для принятия данных
-                    // StreamWriter RaspWrite = new StreamWriter("caf39.txt"); // создание текстового файла для хранения данных веб-страницы
-                    web_esstu = RaspRead.ReadToEnd(); // сохранение загруженных данных в глобальную строку
-                    // RaspWrite.WriteLine(response); // запись считанных данных в файл
-                    RaspStr.Dispose();
-                    RaspRead.Dispose();
-                    // RaspWrite.Dispose();
-                    RaspRes.Close();
-                    #endregion
-                    #region Узнаем дату обновления расписания
-                    var request_caf39 = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
-                    request_caf39.UserAgent = "Rasp. 608";
-                    using (var get_date = (HttpWebResponse)request_caf39.GetResponse())
-                    {
-                        DateTime date_time = get_date.LastModified;
-                        label1.Text = "Дата обновления: " + date_time.ToString("dd.MM.yyyy");
-                    }
-                    #endregion
-                    #region Узнаем текущую неделя расписания
-                    WebClient client = new WebClient();
-                    Stream data = client.OpenRead("https://esstu.ru/index.htm");
-                    StreamReader reader = new StreamReader(data);
-                    string response = "";
-                    while (!reader.EndOfStream)
-                    {
-                        response = reader.ReadLine();
-                        if (response.IndexOf("\"header-date\"") >= 0)
-                        {
-                            response = response.Substring(response.IndexOf("\"header-date\"") + 14, response.Length - 47);
-                            daterasp.Text = "Общее расписание кафедры: " + response;
-                            // выбираем текущую неделю в comboBox'е
-                            comboBox2.SelectedIndex = 0;
-                            if (response.IndexOf("II н") >= 0)
+                            Cafstr = CafReader.ReadLine();
+                            if (Cafstr.IndexOf("Электроснабжение промышленных предприятий") >= 0)
                             {
-                                comboBox2.SelectedIndex = 1;
-                                nedely_rasp = 1; // для передачи на форму "Form608"
+                                NomerCaf = Cafstr.Substring(Cafstr.IndexOf("<a href=\"") + 9, Cafstr.IndexOf("<a href=\""));
+                                Properties.Settings.Default.number_caf = NomerCaf;
+                                Properties.Settings.Default.Save();
+                                break;
                             }
-                            break;
+                            else if (CafReader.EndOfStream)
+                            {
+                                MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nРасписание не доступно!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
                         }
-                        else if (reader.EndOfStream)
-                            MessageBox.Show("Не могу определить номер недели.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    client.Dispose();
-                    data.Dispose();
-                    reader.Dispose();
-                    comboBox2.Enabled = true;
-                    #endregion
-                    #region Чтение файла, загрузка преподавателей и недель учебы
-                    // StreamReader stremer = new StreamReader("caf39.txt");
-                    TextReader skan_web = new StringReader(web_esstu); // создание считывающего потока строковых данных
-                    response = "";
-                    while (response != null)
-                    {
-                        response = skan_web.ReadLine();
-                        if ((response != null) && (response.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
+                        CafClient.Dispose(); CafStream.Close(); CafReader.Close();
+                        #endregion
+                        #region Узнаем дату обновления расписания
+                        var request_caf39 = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
+                        request_caf39.UserAgent = "Rasp. 608";
+                        using (var get_date = (HttpWebResponse)request_caf39.GetResponse())
                         {
-                            comboBox1.Items.Add(response.Substring(response.IndexOf("COLOR=\"#ff00ff\"> ") + 17, response.Length - response.IndexOf("COLOR=\"#ff00ff\"> ") - 28));
+                            DateTime date_time = get_date.LastModified;
+                            Properties.Settings.Default.date_rasp = date_time;
+                            Properties.Settings.Default.Save();
+                            label1.Text = "Дата обновления: " + date_time.ToString("dd.MM.yyyy");
                         }
+                        #endregion
+                        #region Загрузка рассписания кафедры
+                        // отправка запроса на подключение к сайту 
+                        HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + NomerCaf + ".htm"); // передача адреса строки
+                        HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse(); // отправка запроса и получение ответа
+                        Stream RaspStr = RaspRes.GetResponseStream(); // получение ответа ввиде потока информации
+                        StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default); // создание потоковой переменной для принятия данных
+
+                        // создание каталога в папке программы и файла расписания по датам
+                        string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры"); // путь к имени каталога рабочей папки
+                        if (!Directory.Exists(path_file))
+                            Directory.CreateDirectory(path_file); // создание каталога, если его нет в рабочей папке
+                        string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt"); // создание текстового файла в каталоге расписания
+                        StreamWriter raspfile_write = new StreamWriter(file_rasp); // создаём поток для записи данных в файл
+
+                        // загрузка данных с сайта и сохранение
+                        string web_esstu = ""; // для временного хранения html страницы
+                        web_esstu = RaspRead.ReadToEnd(); // сохранение загруженных данных
+                        raspfile_write.WriteLine(web_esstu); // запись считанных данных в файл
+                        // чистка ресурсов
+                        raspfile_write.Dispose();
+                        RaspRead.Dispose();
+                        RaspStr.Dispose();
+                        RaspRes.Close();
+                        #endregion
+                        #region Узнаем текущую неделю расписания
+                        WebClient client = new WebClient();
+                        Stream data = client.OpenRead("https://esstu.ru/index.htm");
+                        StreamReader reader = new StreamReader(data);
+                        string response = "";
+                        while (!reader.EndOfStream)
+                        {
+                            response = reader.ReadLine();
+                            if (response.IndexOf("\"header-date\"") >= 0)
+                            {
+                                response = response.Substring(response.IndexOf("\"header-date\"") + 14, response.Length - 47);
+                                daterasp.Text = "Общее расписание кафедры: " + response;
+                                Properties.Settings.Default.number_nedel = response;
+                                Properties.Settings.Default.Save();
+                                comboBox2.SelectedIndex = 0; // выбираем текущую неделю в comboBox'е
+                                if (Properties.Settings.Default.number_nedel.IndexOf("II н") >= 0)
+                                {
+                                    comboBox2.SelectedIndex = 1;
+                                    nedely_rasp = 1; // для передачи на форму "Form608"
+                                }
+                                break;
+                            }
+                            else if (reader.EndOfStream)
+                                MessageBox.Show("Не могу определить номер недели!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        reader.Dispose();
+                        data.Dispose();
+                        client.Dispose();
+                        comboBox2.Enabled = true;
+                        #endregion
+                        #region Загрузка преподавателей
+                        TextReader skan_web = new StringReader(web_esstu); // создание считывающего потока
+                        response = "";
+                        while (response != null)
+                        {
+                            response = skan_web.ReadLine();
+                            if ((response != null) && (response.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
+                                comboBox1.Items.Add(response.Substring(response.IndexOf("COLOR=\"#ff00ff\"> ") + 17, response.Length - response.IndexOf("COLOR=\"#ff00ff\"> ") - 28));
+                        }
+                        расписаниеToolStripMenuItem.Enabled = true;
+                        comboBox1.SelectedIndex = 0;
+                        comboBox1.Enabled = true;
+                        dataGridView1.Enabled = true;
+                        SetDoubleBuffered(dataGridView1, true); // включаем быструю перерисовку таблицы
+                        graphic608.Enabled = true;
+                        web_esstu = ""; // очистка загруженных данных с сайта
+                        #endregion
+                        #region Ставаим статус соединения - онлайн
+                        pictureBox1.Size = status_con.Size;
+                        pictureBox1.Image = status_con;
+                        pictureBox1.Invalidate(); // перерисовка бокса
+                        check_update.Enabled = true;
+
+                        Properties.Settings.Default.starter++; // увеличиваем счетчик запуска программы
+                        Properties.Settings.Default.Save(); // обязательно сохраняем настройки в файл (C:\Users\aleks\AppData\Local\Zelenkov_A.V)
+                        start_prog.Text = "Запусков: " + Properties.Settings.Default.starter; // указываем кол-во запусков
+                        #endregion
                     }
-                    расписаниеToolStripMenuItem.Enabled = true;
-                    comboBox1.SelectedIndex = 0;
-                    comboBox1.Enabled = true;
-                    dataGridView1.Enabled = true;
-                    SetDoubleBuffered(dataGridView1, true); // включаем быструю перерисовку таблицы
-                    graphic608.Enabled = true;
-                    #endregion
-                    #region Ставаим статус соединения - онлайн
-                    pictureBox1.Size = status_con.Size;
-                    pictureBox1.Image = status_con;
-                    pictureBox1.Invalidate(); // перерисовка бокса
-                    #endregion
+                }
+                catch (WebException) // соединение с сайтом не установлено
+                {
+                    MessageBox.Show("Нет соединения с расписанием ВСГУТУ.\nРасписание не доступно.", "Ошибка соединения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            catch (WebException)
+            else // если программа уже была запущена ранее и есть настройки были изменены
             {
-                MessageBox.Show("Нет соединения с расписанием ВСГУТУ.\nРасписание не доступно.", "Ошибка соединения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                label1.Text = "Дата обновления: " + Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy"); // указываем дату обновления расписания
+                #region Проверяем наличие каталога и файла с данными
+                string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+                if (!Directory.Exists(path_file) || !File.Exists(file_rasp))
+                {
+                    MessageBox.Show("Внимание, данные пропали!\n\n" +
+                        "Скорей всего они были случайно удалены или повреждены, но не переживайте.\n" +
+                        "Будет произведён автоматический сброс параметров и программа перезапустится.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Properties.Settings.Default.starter = 0;
+                    Properties.Settings.Default.Save();
+                    // перезапуск приложения
+                    Application.Restart();
+                    Environment.Exit(1);
+                }
+                #endregion
+                #region Указываем текущую неделю расписания
+                daterasp.Text = "Расписание кафедры: " + Properties.Settings.Default.number_nedel;
+                comboBox2.SelectedIndex = 0;
+                if (Properties.Settings.Default.number_nedel.IndexOf("II н") >= 0)
+                {
+                    comboBox2.SelectedIndex = 1;
+                    nedely_rasp = 1;
+                }
+                comboBox2.Enabled = true;
+                #endregion
+                #region Загрузка преподавателей
+                string path_file2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                string file_rasp2 = Path.Combine(path_file2, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+                StreamReader rasp_reader2 = new StreamReader(file_rasp2);
+
+                string response = "";
+                while (response != null)
+                {
+                    response = rasp_reader2.ReadLine();
+                    if ((response != null) && (response.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
+                        comboBox1.Items.Add(response.Substring(response.IndexOf("COLOR=\"#ff00ff\"> ") + 17, response.Length - response.IndexOf("COLOR=\"#ff00ff\"> ") - 28));
+                }
+                расписаниеToolStripMenuItem.Enabled = true;
+                comboBox1.SelectedIndex = 0;
+                comboBox1.Enabled = true;
+                dataGridView1.Enabled = true;
+                SetDoubleBuffered(dataGridView1, true); // включаем быструю перерисовку таблицы
+                graphic608.Enabled = true;
+                #endregion
+                #region Проверка наличия интернета
+                try
+                {
+                    HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                    HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse();
+                    if (HttpStatusCode.OK == test_response.StatusCode)
+                    {
+                        pictureBox1.Size = status_con.Size;
+                        pictureBox1.Image = status_con;
+                        pictureBox1.Invalidate();
+                        check_update.Enabled = true;
+                    }
+                }
+                catch
+                {
+                    pictureBox1.Size = status_dis.Size;
+                    pictureBox1.Image = status_dis;
+                    pictureBox1.Invalidate();
+                    check_update.Enabled = false;
+                }
+                Properties.Settings.Default.starter++;
+                Properties.Settings.Default.Save();
+                start_prog.Text = "Запусков: " + Properties.Settings.Default.starter;
+                #endregion
             }
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -227,12 +316,14 @@ namespace Test
                 }
             #endregion
             #region Составление расписания при выборе преподавателя
-            // StreamReader raspstream = new StreamReader("caf39.txt");
-            TextReader skan_web = new StringReader(web_esstu);
+            string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+            string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+            StreamReader rasp_reader = new StreamReader(file_rasp);
+
             string raspstr = "";
             while (raspstr != null)
             {
-                raspstr = skan_web.ReadLine();
+                raspstr = rasp_reader.ReadLine();
                 // ищем тег преподавателя в файле
                 if ((raspstr != null) && (raspstr.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
                 {
@@ -242,7 +333,7 @@ namespace Test
                         // составляем рассписание препода, пока не закончилась нужная неделя
                         while ((raspstr != null) && (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"") == -1))
                         {
-                            raspstr = skan_web.ReadLine();
+                            raspstr = rasp_reader.ReadLine();
                             #region 1 неделя
                             // если выбрана 1 неделя
                             if ((raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "1 неделя"))
@@ -252,11 +343,11 @@ namespace Test
                                     for (int i = 1; i <= 6; i++)
                                     {
                                         while (raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1) // тег для поиска дня недели
-                                            raspstr = skan_web.ReadLine();
-                                        raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
+                                        raspstr = rasp_reader.ReadLine();
                                         for (int j = 1; j != 7; j++)
                                         {
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                             // меняем цвет ячейки пары, если она идет в 608 ау.
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
                                                 dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.PowderBlue;
@@ -267,7 +358,7 @@ namespace Test
                                             {
                                                 #region Форматирование текста
                                                 raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\">") + 15, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\">") - 27);
-                                                raspstr = raspstr.Replace("    ","\n"); // заменя пробелов на переход новой строки
+                                                raspstr = raspstr.Replace("    ", "\n"); // заменя пробелов на переход новой строки
                                                 raspstr = raspstr.Replace("...", ""); // замена троеточия на пустой символ
                                                 raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
                                                 raspstr = raspstr.Replace("пр.", "\n-практика-\n");
@@ -278,10 +369,10 @@ namespace Test
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                         }
                                     }
-                                    skan_web.Dispose();
+                                    rasp_reader.Dispose();
                                     return;
                                 }
                             }
@@ -295,11 +386,11 @@ namespace Test
                                     for (int i = 1; i <= 6; i++)
                                     {
                                         while (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
-                                            raspstr = skan_web.ReadLine();
-                                        raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
+                                        raspstr = rasp_reader.ReadLine();
                                         for (int j = 1; j != 7; j++)
                                         {
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
                                                 dataGridView1.Rows[i].Cells[j].Style.BackColor = System.Drawing.Color.PowderBlue;
                                             if (raspstr.IndexOf("\"> _") >= 0)
@@ -319,10 +410,10 @@ namespace Test
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                         }
                                     }
-                                    skan_web.Dispose();
+                                    rasp_reader.Dispose();
                                     return;
                                 }
                             }
@@ -393,12 +484,14 @@ namespace Test
                 }
             #endregion
             #region Составление расписания при выборе преподавателя
-            // StreamReader raspstream = new StreamReader("caf39.txt");
-            TextReader skan_web = new StringReader(web_esstu);
+            string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+            string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+            StreamReader rasp_reader = new StreamReader(file_rasp);
+
             string raspstr = "";
             while (raspstr != null)
             {
-                raspstr = skan_web.ReadLine();
+                raspstr = rasp_reader.ReadLine();
                 // ищем тег преподавателя в файле
                 if ((raspstr != null) && (raspstr.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
                 {
@@ -408,7 +501,7 @@ namespace Test
                         // составляем рассписание препода, пока не закончилась нужная неделя
                         while ((raspstr != null) && (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"") == -1))
                         {
-                            raspstr = skan_web.ReadLine();
+                            raspstr = rasp_reader.ReadLine();
                             #region 1 неделя
                             // если выбрана 1 неделя
                             if ((raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "1 неделя"))
@@ -418,11 +511,11 @@ namespace Test
                                     for (int i = 1; i <= 6; i++)
                                     {
                                         while (raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1) // тег для поиска дня недели
-                                            raspstr = skan_web.ReadLine();
-                                        raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
+                                        raspstr = rasp_reader.ReadLine();
                                         for (int j = 1; j != 7; j++)
                                         {
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                             // меняем цвет ячейки пары, если она идет в 608 ау.
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
                                                 dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.PowderBlue;
@@ -444,10 +537,10 @@ namespace Test
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                         }
                                     }
-                                    skan_web.Dispose();
+                                    rasp_reader.Dispose();
                                     return;
                                 }
                             }
@@ -461,11 +554,11 @@ namespace Test
                                     for (int i = 1; i <= 6; i++)
                                     {
                                         while (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
-                                            raspstr = skan_web.ReadLine();
-                                        raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
+                                        raspstr = rasp_reader.ReadLine();
                                         for (int j = 1; j != 7; j++)
                                         {
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
                                                 dataGridView1.Rows[i].Cells[j].Style.BackColor = System.Drawing.Color.PowderBlue;
                                             if (raspstr.IndexOf("\"> _") >= 0)
@@ -485,10 +578,10 @@ namespace Test
                                                 #endregion
                                                 dataGridView1.Rows[i].Cells[j].Value = raspstr;
                                             }
-                                            raspstr = skan_web.ReadLine();
+                                            raspstr = rasp_reader.ReadLine();
                                         }
                                     }
-                                    skan_web.Dispose();
+                                    rasp_reader.Dispose();
                                     return;
                                 }
                             }
@@ -526,40 +619,42 @@ namespace Test
                 #endregion
                 #region Записываем расписание пар в таблицу
                 Word.Table table = docApp.ActiveDocument.Tables[1];
-                // StreamReader filehtm = new StreamReader("caf39.txt");
-                TextReader skan_web = new StringReader(web_esstu);
+                string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+                StreamReader rasp_reader = new StreamReader(file_rasp);
+
                 string bufferfile = "";
                 string NamePrep;
                 int i = 4, q = 1;
                 while (bufferfile != null)
                 {
-                    bufferfile = skan_web.ReadLine();
+                    bufferfile = rasp_reader.ReadLine();
                     if ((bufferfile != null) && (bufferfile.IndexOf("#ff00ff\"> ") >= 0))
                     {
                         // сохраняем сокращенное имя препода в хранилище
                         NamePrep = bufferfile.Substring(bufferfile.IndexOf("COLOR=\"#ff00ff\"> ") + 17, bufferfile.Length - bufferfile.IndexOf("COLOR=\"#ff00ff\"> ") - 28);
                         NamePrep = NamePrep.Remove(1, NamePrep.IndexOf(" ")); // удаляем лишние символы в строке до пробела (без учета первого символа)
                         NamePrep = NamePrep.Replace(".", ""); // удаление оставшегося лишнего символа .
-                        bufferfile = skan_web.ReadLine();
+                        bufferfile = rasp_reader.ReadLine();
                         #region 1 неделя
                         while (i <= 44) // пока не достигли конца таблицы - конца недели
                         {
                             while (bufferfile.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1) // тег для поиска дня недели
-                                bufferfile = skan_web.ReadLine();
-                            bufferfile = skan_web.ReadLine();
+                                bufferfile = rasp_reader.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                             while (q <= 6) // счетчик пар
                             {
-                                bufferfile = skan_web.ReadLine();
+                                bufferfile = rasp_reader.ReadLine();
                                 if ((bufferfile.IndexOf("\">_") == -1) && (bufferfile.IndexOf("а.608а") >= 0))
                                     table.Rows[i].Cells[3].Range.Text = NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2);
                                 else
                                 if ((bufferfile.IndexOf("\">_") == -1) && (bufferfile.IndexOf("а.608б") >= 0))
                                     table.Rows[i].Cells[4].Range.Text = NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2);
-                                bufferfile = skan_web.ReadLine();
+                                bufferfile = rasp_reader.ReadLine();
                                 q++; i++;
                             }
                             i++; q = 1;
-                            bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                         }
                         i = 4;
                         #endregion
@@ -567,27 +662,27 @@ namespace Test
                         while (i <= 44)
                         {
                             while (bufferfile.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
-                                bufferfile = skan_web.ReadLine();
-                            bufferfile = skan_web.ReadLine();
+                                bufferfile = rasp_reader.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                             while (q <= 6)
                             {
-                                bufferfile = skan_web.ReadLine();
+                                bufferfile = rasp_reader.ReadLine();
                                 if ((bufferfile.IndexOf("\"> _") == -1) && (bufferfile.IndexOf("а.608а") >= 0))
                                     table.Rows[i].Cells[7].Range.Text = NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2);
                                 else
                                 if ((bufferfile.IndexOf("\"> _") == -1) && (bufferfile.IndexOf("а.608б") >= 0))
                                     table.Rows[i].Cells[8].Range.Text = NamePrep + " - " + bufferfile.Substring(bufferfile.IndexOf("ALIGN=\"CENTER\">") + 15, bufferfile.Length - bufferfile.IndexOf("</F") - 2);
-                                bufferfile = skan_web.ReadLine();
+                                bufferfile = rasp_reader.ReadLine();
                                 q++; i++;
                             }
                             i++; q = 1;
-                            bufferfile = skan_web.ReadLine();
+                            bufferfile = rasp_reader.ReadLine();
                         }
                         i = 4;
                         #endregion
                     }
                 }
-                skan_web.Dispose();
+                rasp_reader.Dispose();
                 #endregion
                 this.Cursor = Cursors.Default;
                 docApp.Visible = true;
@@ -602,7 +697,7 @@ namespace Test
         }
         private void graphic608_Click(object sender, EventArgs e)
         {
-            Form608 f608 = new Form608(this.graphic608, web_esstu, this.nedely_rasp); // создаем объект второй формы и передаем ей состояние кнопки формы, html сайт и день недели
+            Form608 f608 = new Form608(this.graphic608, this.nedely_rasp); // создаем объект второй формы и передаем ей состояние кнопки формы, html сайт и день недели
             f608.Show();
             graphic608.Enabled = false; // блокируем кнопку, чтобы не открывать форму по несколько раз
         }
@@ -629,6 +724,7 @@ namespace Test
                     pictureBox1.Size = status_con.Size;
                     pictureBox1.Image = status_con;
                     pictureBox1.Invalidate();
+                    check_update.Enabled = true;
                     #endregion
                 }
             }
@@ -638,6 +734,7 @@ namespace Test
                 pictureBox1.Size = status_dis.Size;
                 pictureBox1.Image = status_dis;
                 pictureBox1.Invalidate();
+                check_update.Enabled = false;
                 #endregion
             }
         }
@@ -657,16 +754,271 @@ namespace Test
             // Перерисовываем таблицу с выделением ячейки
             dataGridView1.Invalidate();
         }
+        private void ЗагрузитьРасписаниеНаКомпьютерToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image == status_con)
+            {
+                var request_caf39 = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
+                request_caf39.UserAgent = "Rasp. 608";
+                DateTime date;
+                using (var get_date = (HttpWebResponse)request_caf39.GetResponse())
+                    date = get_date.LastModified;
+                if (date != Properties.Settings.Default.date_rasp)
+                {
+                    var question = MessageBox.Show("Обнаружено новое расписание.\nХотите обновить текущее расписание?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (question == DialogResult.Yes)
+                    {
+                        #region Переводим программу в режим ожидания
+                        расписаниеToolStripMenuItem.Enabled = false;
+                        graphic608.Enabled = false;
+                        comboBox1.Enabled = false;
+                        comboBox2.Enabled = false;
+                        dataGridView1.Enabled = false;
+                        dataGridView1.Rows.Clear();
+                        this.Cursor = Cursors.WaitCursor;
+                        // сохранение новой даты расписания
+                        Properties.Settings.Default.date_rasp = date;
+                        Properties.Settings.Default.Save();
+                        #endregion
+                        try
+                        {
+                            HttpWebRequest test_link_ = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                            HttpWebResponse test_response_ = (HttpWebResponse)test_link_.GetResponse();
+                            if (HttpStatusCode.OK == test_response_.StatusCode)
+                            {
+                                #region Узнаем номер кафедры
+                                WebClient CafClient_ = new WebClient();
+                                Stream CafStream_ = CafClient_.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
+                                StreamReader CafReader_ = new StreamReader(CafStream_, System.Text.Encoding.Default);
+                                string Caf_ = "";
+                                string NomerCaf = "";
+                                while (!CafReader_.EndOfStream)
+                                {
+                                    Caf_ = CafReader_.ReadLine();
+                                    if (Caf_.IndexOf("Электроснабжение промышленных предприятий") >= 0)
+                                    {
+                                        NomerCaf = Caf_.Substring(Caf_.IndexOf("<a href=\"") + 9, Caf_.IndexOf("<a href=\""));
+                                        if (NomerCaf != Properties.Settings.Default.number_caf)
+                                        {
+                                            Properties.Settings.Default.number_caf = NomerCaf;
+                                            Properties.Settings.Default.Save();
+                                        }
+                                        break;
+                                    }
+                                    else if (CafReader_.EndOfStream)
+                                    {
+                                        MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nОшибка обновления!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                }
+                                CafReader_.Close();
+                                CafStream_.Close();
+                                CafClient_.Dispose();
+                                #endregion
+                                #region Загрузка нового рассписания
+                                // отправка запроса на подключение к сайту 
+                                HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + Properties.Settings.Default.number_caf + ".htm");
+                                HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse();
+                                Stream RaspStr = RaspRes.GetResponseStream();
+                                StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default);
+                                // создание каталога в папке программы и файла расписания по датам
+                                string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                                if (!Directory.Exists(path_file))
+                                    Directory.CreateDirectory(path_file);
+                                string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+                                StreamWriter raspfile_write = new StreamWriter(file_rasp);
+                                // загрузка данных с сайта и сохранение
+                                string web_esstu = "";
+                                web_esstu = RaspRead.ReadToEnd();
+                                raspfile_write.WriteLine(web_esstu);
+                                // чистка ресурсов
+                                raspfile_write.Dispose();
+                                RaspRead.Dispose();
+                                RaspStr.Dispose();
+                                RaspRes.Close();
+                                RaspReq.Abort();
+                                #endregion
+                                #region Узнаем текущую неделю расписания
+                                WebClient client = new WebClient();
+                                Stream data = client.OpenRead("https://esstu.ru/index.htm");
+                                StreamReader reader = new StreamReader(data);
+                                string response = "";
+                                while (!reader.EndOfStream)
+                                {
+                                    response = reader.ReadLine();
+                                    if (response.IndexOf("\"header-date\"") >= 0)
+                                    {
+                                        response = response.Substring(response.IndexOf("\"header-date\"") + 14, response.Length - 47);
+                                        Properties.Settings.Default.number_nedel = response;
+                                        Properties.Settings.Default.Save();
+                                        break;
+                                    }
+                                }
+                                reader.Dispose();
+                                data.Dispose();
+                                client.Dispose();
+                                #endregion
+                                #region Завершаем обновление
+                                test_response_.Close();
+                                test_link_.Abort();
+                                MessageBox.Show("Расписание обновлено.\nПрограмма будет перезапущена.", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Application.Restart();
+                                Environment.Exit(1);
+                                #endregion
+                            }
+                        }
+                        catch (WebException)
+                        {
+                            MessageBox.Show("Нет соединения с расписанием ВСГУТУ.\nОбновление не завершено, попробуйте позже.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else MessageBox.Show("У вас актуальная версия расписания.\nОбновление не требуется.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        private void УдалитьРасписаниеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var result_dialog = MessageBox.Show("Вы точно хотите стереть все данные?\n\n" +
+                "В этом случае все загруженные расписания будут удалены, выполнется сброс настроек и перезапуск программы.\n\n" +
+                "P.S.: старайтесь делать сброс ТОЛЬКО при неправильном отображении расписания в таблицах или при неправильной работе программы.", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result_dialog == DialogResult.Yes)
+            {
+                // удаление каталога с данными
+                string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                Directory.Delete(path_file, true);
+                dataGridView1.Rows.Clear();
+                // сброс параметров
+                Properties.Settings.Default.starter = 0;
+                Properties.Settings.Default.Save();
+                MessageBox.Show("Поздравляю, сброс программы выполнен.\nВсе данные удалены.", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Application.Restart();
+                Environment.Exit(1);
+            }
+        }
+        private void Timer2_Tick(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image == status_con)
+            {
+                var request_caf39 = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
+                request_caf39.UserAgent = "Rasp. 608";
+                DateTime date;
+                using (var get_date = (HttpWebResponse)request_caf39.GetResponse())
+                    date = get_date.LastModified;
+                if (date != Properties.Settings.Default.date_rasp)
+                {
+                    var question = MessageBox.Show("Обнаружено новое расписание.\nХотите обновить текущее расписание?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (question == DialogResult.Yes)
+                    {
+                        #region Переводим программу в режим ожидания
+                        расписаниеToolStripMenuItem.Enabled = false;
+                        graphic608.Enabled = false;
+                        comboBox1.Enabled = false;
+                        comboBox2.Enabled = false;
+                        dataGridView1.Enabled = false;
+                        dataGridView1.Rows.Clear();
+                        this.Cursor = Cursors.WaitCursor;
+                        // сохранение новой даты расписания
+                        Properties.Settings.Default.date_rasp = date;
+                        Properties.Settings.Default.Save();
+                        #endregion
+                        try
+                        {
+                            HttpWebRequest test_link_ = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                            HttpWebResponse test_response_ = (HttpWebResponse)test_link_.GetResponse();
+                            if (HttpStatusCode.OK == test_response_.StatusCode)
+                            {
+                                #region Узнаем номер кафедры
+                                WebClient CafClient_ = new WebClient();
+                                Stream CafStream_ = CafClient_.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
+                                StreamReader CafReader_ = new StreamReader(CafStream_, System.Text.Encoding.Default);
+                                string Caf_ = "";
+                                string NomerCaf = "";
+                                while (!CafReader_.EndOfStream)
+                                {
+                                    Caf_ = CafReader_.ReadLine();
+                                    if (Caf_.IndexOf("Электроснабжение промышленных предприятий") >= 0)
+                                    {
+                                        NomerCaf = Caf_.Substring(Caf_.IndexOf("<a href=\"") + 9, Caf_.IndexOf("<a href=\""));
+                                        if (NomerCaf != Properties.Settings.Default.number_caf)
+                                        {
+                                            Properties.Settings.Default.number_caf = NomerCaf;
+                                            Properties.Settings.Default.Save();
+                                        }
+                                        break;
+                                    }
+                                    else if (CafReader_.EndOfStream)
+                                    {
+                                        MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nОшибка обновления!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                }
+                                CafReader_.Close();
+                                CafStream_.Close();
+                                CafClient_.Dispose();
+                                #endregion
+                                #region Загрузка нового рассписания
+                                // отправка запроса на подключение к сайту 
+                                HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + Properties.Settings.Default.number_caf + ".htm");
+                                HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse();
+                                Stream RaspStr = RaspRes.GetResponseStream();
+                                StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default);
+                                // создание каталога в папке программы и файла расписания по датам
+                                string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                                if (!Directory.Exists(path_file))
+                                    Directory.CreateDirectory(path_file);
+                                string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+                                StreamWriter raspfile_write = new StreamWriter(file_rasp);
+                                // загрузка данных с сайта и сохранение
+                                string web_esstu = "";
+                                web_esstu = RaspRead.ReadToEnd();
+                                raspfile_write.WriteLine(web_esstu);
+                                // чистка ресурсов
+                                raspfile_write.Dispose();
+                                RaspRead.Dispose();
+                                RaspStr.Dispose();
+                                RaspRes.Close();
+                                RaspReq.Abort();
+                                #endregion
+                                #region Узнаем текущую неделю расписания
+                                WebClient client = new WebClient();
+                                Stream data = client.OpenRead("https://esstu.ru/index.htm");
+                                StreamReader reader = new StreamReader(data);
+                                string response = "";
+                                while (!reader.EndOfStream)
+                                {
+                                    response = reader.ReadLine();
+                                    if (response.IndexOf("\"header-date\"") >= 0)
+                                    {
+                                        response = response.Substring(response.IndexOf("\"header-date\"") + 14, response.Length - 47);
+                                        Properties.Settings.Default.number_nedel = response;
+                                        Properties.Settings.Default.Save();
+                                        break;
+                                    }
+                                }
+                                reader.Dispose();
+                                data.Dispose();
+                                client.Dispose();
+                                #endregion
+                                #region Завершаем обновление
+                                test_response_.Close();
+                                test_link_.Abort();
+                                MessageBox.Show("Расписание обновлено.\nПрограмма будет перезапущена.", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Application.Restart();
+                                Environment.Exit(1);
+                                #endregion
+                            }
+                        }
+                        catch (WebException)
+                        {
+                            MessageBox.Show("Нет соединения с расписанием ВСГУТУ.\nОбновление не завершено, попробуйте позже.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
+
 // !Функции!
-// Подумать над локальном сохранением расписаний по последним датам изменения
-// Сделать справку - описание работы программы
 // Сделать уведомление о наличии нового расписания
 // Добавить Артефакт и отзыв о программе (форма для заполнения со звездами, пожеланиями и отправкой мне на почту)
 // Сделать загрузку программы красивее, подумать о Flat стиле
-// "Неизвестный издатель" при установке
 // Сделать сканирования колледжа правильным (нет типа пары - пр., лек., лаб.)
-
-// !Оптимизация!
-// Программа виснет при проверки соединения
