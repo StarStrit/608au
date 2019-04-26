@@ -125,7 +125,7 @@ namespace Test
                             if (response.IndexOf("\"header-date\"") >= 0)
                             {
                                 response = response.Substring(response.IndexOf("\"header-date\"") + 14, response.Length - 47);
-                                daterasp.Text = "Общее расписание кафедры: " + response;
+                                daterasp.Text = "Расписание кафедры: " + response;
                                 Properties.Settings.Default.number_nedel = response;
                                 Properties.Settings.Default.Save();
                                 comboBox2.SelectedIndex = 0; // выбираем текущую неделю в comboBox'е
