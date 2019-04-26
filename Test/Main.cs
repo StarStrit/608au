@@ -42,11 +42,6 @@ namespace Test
             };
             #endregion
         }
-        private void Main_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            comboBox1.Items.Clear();
-            comboBox2.Items.Clear();
-        }
         private void ESPPForm_Shown(object sender, EventArgs e)
         {
             timer1.Start(); // таймер для проверки соединения с сайтом
@@ -158,7 +153,6 @@ namespace Test
                             if ((response != null) && (response.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
                                 comboBox1.Items.Add(response.Substring(response.IndexOf("COLOR=\"#ff00ff\"> ") + 17, response.Length - response.IndexOf("COLOR=\"#ff00ff\"> ") - 28));
                         }
-                        расписаниеToolStripMenuItem.Enabled = true;
                         comboBox1.SelectedIndex = 0;
                         comboBox1.Enabled = true;
                         dataGridView1.Enabled = true;
@@ -174,7 +168,7 @@ namespace Test
 
                         Properties.Settings.Default.starter++; // увеличиваем счетчик запуска программы
                         Properties.Settings.Default.Save(); // обязательно сохраняем настройки в файл (C:\Users\aleks\AppData\Local\Zelenkov_A.V)
-                        start_prog.Text = "Запусков: " + Properties.Settings.Default.starter; // указываем кол-во запусков
+                        startCount.Text = "Запусков программы: " + Properties.Settings.Default.starter; // указываем кол-во запусков
                         #endregion
                     }
                 }
@@ -223,7 +217,6 @@ namespace Test
                     if ((response != null) && (response.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
                         comboBox1.Items.Add(response.Substring(response.IndexOf("COLOR=\"#ff00ff\"> ") + 17, response.Length - response.IndexOf("COLOR=\"#ff00ff\"> ") - 28));
                 }
-                расписаниеToolStripMenuItem.Enabled = true;
                 comboBox1.SelectedIndex = 0;
                 comboBox1.Enabled = true;
                 dataGridView1.Enabled = true;
@@ -252,7 +245,7 @@ namespace Test
                 }
                 Properties.Settings.Default.starter++;
                 Properties.Settings.Default.Save();
-                start_prog.Text = "Запусков: " + Properties.Settings.Default.starter;
+                startCount.Text = "Запусков программы: " + Properties.Settings.Default.starter;
                 #endregion
             }
         }
@@ -262,10 +255,10 @@ namespace Test
             dataGridView1.Rows.Clear();
             dataGridView1.RowCount = 0; dataGridView1.RowCount = 7;
             for (int i = 0; i < 7; i++)
-                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.Gainsboro;
+                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.LightSteelBlue;
             for (int i = 1; i < 7; i++)
             {
-                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Gainsboro;
+                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
                 dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
             }
             dataGridView1.Rows[0].Cells[0].Value = "Время";
@@ -350,7 +343,7 @@ namespace Test
                                             raspstr = rasp_reader.ReadLine();
                                             // меняем цвет ячейки пары, если она идет в 608 ау.
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.PowderBlue;
+                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
                                             // если пар нет
                                             if (raspstr.IndexOf("\">_") >= 0)
                                                 dataGridView1.Rows[i].Cells[j].Value = "-";
@@ -392,7 +385,7 @@ namespace Test
                                         {
                                             raspstr = rasp_reader.ReadLine();
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = System.Drawing.Color.PowderBlue;
+                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
                                             if (raspstr.IndexOf("\"> _") >= 0)
                                                 dataGridView1.Rows[i].Cells[j].Value = "-";
                                             else
@@ -430,10 +423,10 @@ namespace Test
             dataGridView1.Rows.Clear();
             dataGridView1.RowCount = 0; dataGridView1.RowCount = 7;
             for (int i = 0; i < 7; i++)
-                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.Gainsboro;
+                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.LightSteelBlue;
             for (int i = 1; i < 7; i++)
             {
-                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Gainsboro;
+                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
                 dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
             }
             dataGridView1.Rows[0].Cells[0].Value = "Время";
@@ -518,7 +511,7 @@ namespace Test
                                             raspstr = rasp_reader.ReadLine();
                                             // меняем цвет ячейки пары, если она идет в 608 ау.
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.PowderBlue;
+                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
                                             // если пар нет
                                             if (raspstr.IndexOf("\">_") >= 0)
                                                 dataGridView1.Rows[i].Cells[j].Value = "-";
@@ -560,7 +553,7 @@ namespace Test
                                         {
                                             raspstr = rasp_reader.ReadLine();
                                             if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = System.Drawing.Color.PowderBlue;
+                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
                                             if (raspstr.IndexOf("\"> _") >= 0)
                                                 dataGridView1.Rows[i].Cells[j].Value = "-";
                                             else
@@ -708,7 +701,7 @@ namespace Test
         }
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
-            toolTip1.SetToolTip(pictureBox1, "Отображает состояние подключения к интернету, где:\n     * Зеленый индикатор - интернет подключен;\n     * Красный индикатор - нет подключение к интернету (загружено резервное расписание)."); // всплывающая подсказка
+            toolTip1.SetToolTip(pictureBox1, "Отображает состояние подключения, где:\n     * Обычный индикатор - подключен к сайту ВСГУТУ;\n     * Зачёркнутый индикатор - нет подключение к сайту ВСГУТУ."); // всплывающая подсказка
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -751,7 +744,7 @@ namespace Test
         }
         private void dataGridView1_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            // Перерисовываем таблицу с выделением ячейки
+            // перерисовываем таблицу с выделением ячейки
             dataGridView1.Invalidate();
         }
         private void ЗагрузитьРасписаниеНаКомпьютерToolStripMenuItem_Click(object sender, EventArgs e)

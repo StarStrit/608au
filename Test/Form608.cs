@@ -31,17 +31,17 @@ namespace Test
             dataGridView2.Columns[0].Width = 50;
             #region Красим заголовки недель таблицы
             for (int i = 0; i < 7; i++)
-                dataGridView2.Rows[0].Cells[i].Style.BackColor = Color.DarkGray;
+                dataGridView2.Rows[0].Cells[i].Style.BackColor = Color.SteelBlue;
             for (int i = 0; i < 7; i++)
-                dataGridView2.Rows[9].Cells[i].Style.BackColor = Color.DarkGray;
+                dataGridView2.Rows[9].Cells[i].Style.BackColor = Color.SteelBlue;
             for (int i = 0; i < 7; i++)
-                dataGridView2.Rows[2].Cells[i].Style.BackColor = Color.Gainsboro;
+                dataGridView2.Rows[2].Cells[i].Style.BackColor = Color.LightSteelBlue;
             for (int i = 3; i < 9; i++)
-                dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.Gainsboro;
+                dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
             for (int i = 0; i < 7; i++)
-                dataGridView2.Rows[11].Cells[i].Style.BackColor = Color.Gainsboro;
+                dataGridView2.Rows[11].Cells[i].Style.BackColor = Color.LightSteelBlue;
             for (int i = 12; i < 18; i++)
-                dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.Gainsboro;
+                dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
             #endregion
             #region Неделя 1
             dataGridView2.Rows[0].Cells[3].Value = "1 неделя";
@@ -233,7 +233,6 @@ namespace Test
         }
         private void Form608_FormClosed(object sender, FormClosedEventArgs e)
         {
-            dataGridView2.Rows.Clear(); dataGridView2.Columns.Clear();
             graphic_Form608.Enabled = true; // включаем кнопку снова, после закрытия графика расписаний
         }
         private void dataGridView2_SelectionChanged(object sender, EventArgs e)

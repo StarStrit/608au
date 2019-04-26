@@ -68,11 +68,21 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.start_prog = new System.Windows.Forms.Label();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.panelMenu = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.startCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusBar = new System.Windows.Forms.StatusStrip();
+            this.all_rights = new System.Windows.Forms.ToolStripStatusLabel();
+            this.slesh = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panelMenu.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.statusBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -85,14 +95,10 @@
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Info;
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Info;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 9.75F);
@@ -115,13 +121,14 @@
             dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Info;
             dataGridViewCellStyle10.Font = new System.Drawing.Font("Tahoma", 9.75F);
             dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.InfoText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.InactiveCaption;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.InfoText;
             dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle10;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Enabled = false;
-            this.dataGridView1.GridColor = System.Drawing.SystemColors.InfoText;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 64);
+            this.dataGridView1.GridColor = System.Drawing.Color.SteelBlue;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -146,7 +153,7 @@
             this.dataGridView1.ShowCellToolTips = false;
             this.dataGridView1.ShowEditingIcon = false;
             this.dataGridView1.ShowRowErrors = false;
-            this.dataGridView1.Size = new System.Drawing.Size(660, 408);
+            this.dataGridView1.Size = new System.Drawing.Size(658, 404);
             this.dataGridView1.TabIndex = 4;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellMouseEnter);
@@ -271,7 +278,7 @@
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(153, 34);
+            this.comboBox1.Location = new System.Drawing.Point(153, 8);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(136, 24);
@@ -287,7 +294,7 @@
             this.comboBox2.Items.AddRange(new object[] {
             "1 неделя",
             "2 неделя"});
-            this.comboBox2.Location = new System.Drawing.Point(293, 34);
+            this.comboBox2.Location = new System.Drawing.Point(293, 8);
             this.comboBox2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.comboBox2.MaxDropDownItems = 2;
             this.comboBox2.Name = "comboBox2";
@@ -298,7 +305,8 @@
             // daterasp
             // 
             this.daterasp.AutoSize = true;
-            this.daterasp.Location = new System.Drawing.Point(374, 45);
+            this.daterasp.ForeColor = System.Drawing.SystemColors.InfoText;
+            this.daterasp.Location = new System.Drawing.Point(394, 19);
             this.daterasp.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.daterasp.Name = "daterasp";
             this.daterasp.Size = new System.Drawing.Size(166, 16);
@@ -307,7 +315,7 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.menuStrip1.BackColor = System.Drawing.Color.SteelBlue;
             this.menuStrip1.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.расписаниеToolStripMenuItem,
@@ -325,7 +333,6 @@
             this.расписаниеToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem,
             this.check_update});
-            this.расписаниеToolStripMenuItem.Enabled = false;
             this.расписаниеToolStripMenuItem.Name = "расписаниеToolStripMenuItem";
             this.расписаниеToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
             this.расписаниеToolStripMenuItem.Text = "Расписание";
@@ -333,8 +340,10 @@
             // 
             // сформироватьГрафикЗанятийДляПечатиToolStripMenuItem
             // 
+            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Image")));
+            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Name = "сформироватьГрафикЗанятийДляПечатиToolStripMenuItem";
-            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Size = new System.Drawing.Size(307, 22);
+            this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Size = new System.Drawing.Size(316, 32);
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Text = "Сформировать график занятий в Word";
             this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem.Click += new System.EventHandler(this.сформироватьГрафикЗанятийДляПечатиToolStripMenuItem_Click);
             // 
@@ -344,22 +353,28 @@
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem,
             this.удалитьРасписаниеToolStripMenuItem});
             this.check_update.Enabled = false;
+            this.check_update.Image = global::Test.Properties.Resources.update;
+            this.check_update.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.check_update.Name = "check_update";
-            this.check_update.Size = new System.Drawing.Size(307, 22);
+            this.check_update.Size = new System.Drawing.Size(316, 32);
             this.check_update.Text = "Обновление расписания";
             // 
             // загрузитьРасписаниеНаКомпьютерToolStripMenuItem
             // 
+            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Image = global::Test.Properties.Resources.updateRasp;
+            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Name = "загрузитьРасписаниеНаКомпьютерToolStripMenuItem";
-            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Size = new System.Drawing.Size(214, 32);
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Text = "Обновить расписание";
             this.загрузитьРасписаниеНаКомпьютерToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьРасписаниеНаКомпьютерToolStripMenuItem_Click);
             // 
             // удалитьРасписаниеToolStripMenuItem
             // 
+            this.удалитьРасписаниеToolStripMenuItem.Image = global::Test.Properties.Resources.delete;
+            this.удалитьРасписаниеToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.удалитьРасписаниеToolStripMenuItem.Name = "удалитьРасписаниеToolStripMenuItem";
-            this.удалитьРасписаниеToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
-            this.удалитьРасписаниеToolStripMenuItem.Text = "Удалить всё расписание";
+            this.удалитьРасписаниеToolStripMenuItem.Size = new System.Drawing.Size(214, 32);
+            this.удалитьРасписаниеToolStripMenuItem.Text = "Удалить расписание";
             this.удалитьРасписаниеToolStripMenuItem.Click += new System.EventHandler(this.УдалитьРасписаниеToolStripMenuItem_Click);
             // 
             // справкаToolStripMenuItem
@@ -376,21 +391,21 @@
             // 
             // about_menu
             // 
-            this.about_menu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.about_menu.Image = ((System.Drawing.Image)(resources.GetObject("about_menu.Image")));
             this.about_menu.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.about_menu.Name = "about_menu";
-            this.about_menu.Size = new System.Drawing.Size(180, 22);
+            this.about_menu.Size = new System.Drawing.Size(179, 32);
             this.about_menu.Text = "Авторы";
             this.about_menu.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.about_menu.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
             // 
             // оПрограммеToolStripMenuItem
             // 
-            this.оПрограммеToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.оПрограммеToolStripMenuItem.Enabled = false;
+            this.оПрограммеToolStripMenuItem.Image = global::Test.Properties.Resources.info;
             this.оПрограммеToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(179, 32);
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.оПрограммеToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
@@ -398,8 +413,10 @@
             // оставитьОтзывToolStripMenuItem
             // 
             this.оставитьОтзывToolStripMenuItem.Enabled = false;
+            this.оставитьОтзывToolStripMenuItem.Image = global::Test.Properties.Resources.message;
+            this.оставитьОтзывToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.оставитьОтзывToolStripMenuItem.Name = "оставитьОтзывToolStripMenuItem";
-            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.оставитьОтзывToolStripMenuItem.Size = new System.Drawing.Size(179, 32);
             this.оставитьОтзывToolStripMenuItem.Text = "Оставить отзыв";
             this.оставитьОтзывToolStripMenuItem.ToolTipText = "Эта функция будет доступна в следующей версии";
             // 
@@ -409,7 +426,7 @@
             this.graphic608.Cursor = System.Windows.Forms.Cursors.Hand;
             this.graphic608.Enabled = false;
             this.graphic608.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.graphic608.Location = new System.Drawing.Point(4, 34);
+            this.graphic608.Location = new System.Drawing.Point(4, 8);
             this.graphic608.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.graphic608.Name = "graphic608";
             this.graphic608.Size = new System.Drawing.Size(145, 24);
@@ -421,8 +438,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.label1.Location = new System.Drawing.Point(374, 30);
+            this.label1.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.label1.ForeColor = System.Drawing.SystemColors.InfoText;
+            this.label1.Location = new System.Drawing.Point(394, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(186, 16);
             this.label1.TabIndex = 12;
@@ -445,53 +463,109 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.Menu;
+            this.pictureBox1.BackColor = System.Drawing.Color.LightSteelBlue;
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Help;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.ErrorImage = global::Test.Properties.Resources.status_connected;
             this.pictureBox1.Image = global::Test.Properties.Resources.status_disconnected;
             this.pictureBox1.InitialImage = global::Test.Properties.Resources.status_connected;
-            this.pictureBox1.Location = new System.Drawing.Point(630, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(22, 22);
+            this.pictureBox1.Size = new System.Drawing.Size(42, 41);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 13;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
-            // 
-            // start_prog
-            // 
-            this.start_prog.AutoSize = true;
-            this.start_prog.BackColor = System.Drawing.SystemColors.MenuBar;
-            this.start_prog.ForeColor = System.Drawing.SystemColors.ActiveCaption;
-            this.start_prog.Location = new System.Drawing.Point(374, 5);
-            this.start_prog.Name = "start_prog";
-            this.start_prog.Size = new System.Drawing.Size(77, 16);
-            this.start_prog.TabIndex = 14;
-            this.start_prog.Text = "Запусков: 0";
             // 
             // timer2
             // 
             this.timer2.Interval = 21000;
             this.timer2.Tick += new System.EventHandler(this.Timer2_Tick);
             // 
+            // panelMenu
+            // 
+            this.panelMenu.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.panelMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelMenu.Controls.Add(this.panel2);
+            this.panelMenu.Controls.Add(this.graphic608);
+            this.panelMenu.Controls.Add(this.comboBox1);
+            this.panelMenu.Controls.Add(this.daterasp);
+            this.panelMenu.Controls.Add(this.label1);
+            this.panelMenu.Controls.Add(this.comboBox2);
+            this.panelMenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelMenu.Location = new System.Drawing.Point(0, 26);
+            this.panelMenu.Name = "panelMenu";
+            this.panelMenu.Size = new System.Drawing.Size(660, 40);
+            this.panelMenu.TabIndex = 15;
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.pictureBox1);
+            this.panel2.Location = new System.Drawing.Point(615, -2);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(44, 43);
+            this.panel2.TabIndex = 13;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.dataGridView1);
+            this.panel1.Location = new System.Drawing.Point(0, 65);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(660, 406);
+            this.panel1.TabIndex = 16;
+            // 
+            // startCount
+            // 
+            this.startCount.ForeColor = System.Drawing.SystemColors.Window;
+            this.startCount.Name = "startCount";
+            this.startCount.Size = new System.Drawing.Size(73, 17);
+            this.startCount.Text = "Запусков: ...";
+            // 
+            // statusBar
+            // 
+            this.statusBar.BackColor = System.Drawing.Color.SteelBlue;
+            this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.all_rights,
+            this.startCount,
+            this.slesh});
+            this.statusBar.Location = new System.Drawing.Point(0, 469);
+            this.statusBar.Name = "statusBar";
+            this.statusBar.Size = new System.Drawing.Size(660, 22);
+            this.statusBar.SizingGrip = false;
+            this.statusBar.TabIndex = 17;
+            this.statusBar.Text = "statusBar";
+            // 
+            // all_rights
+            // 
+            this.all_rights.ForeColor = System.Drawing.SystemColors.Window;
+            this.all_rights.Name = "all_rights";
+            this.all_rights.Size = new System.Drawing.Size(200, 17);
+            this.all_rights.Text = "Авторские права © 2018-2019          ";
+            // 
+            // slesh
+            // 
+            this.slesh.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.slesh.ForeColor = System.Drawing.SystemColors.Window;
+            this.slesh.Name = "slesh";
+            this.slesh.Size = new System.Drawing.Size(20, 17);
+            this.slesh.Text = "   ";
+            // 
             // ESPPForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(660, 468);
-            this.Controls.Add(this.start_prog);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.graphic608);
-            this.Controls.Add(this.daterasp);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.dataGridView1);
+            this.ClientSize = new System.Drawing.Size(660, 491);
+            this.Controls.Add(this.statusBar);
+            this.Controls.Add(this.panelMenu);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Tahoma", 9.75F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -502,12 +576,17 @@
             this.Name = "ESPPForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Расписание кафедры ЭСППиСХ";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_FormClosed);
             this.Shown += new System.EventHandler(this.ESPPForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panelMenu.ResumeLayout(false);
+            this.panelMenu.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.statusBar.ResumeLayout(false);
+            this.statusBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -541,8 +620,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.ToolStripMenuItem оставитьОтзывToolStripMenuItem;
-        private System.Windows.Forms.Label start_prog;
         private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Panel panelMenu;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripStatusLabel startCount;
+        private System.Windows.Forms.StatusStrip statusBar;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ToolStripStatusLabel slesh;
+        private System.Windows.Forms.ToolStripStatusLabel all_rights;
     }
 }
 
