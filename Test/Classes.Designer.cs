@@ -1,6 +1,6 @@
 ﻿namespace Test
 {
-    partial class Form608
+    partial class Classes
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form608));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Classes));
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
@@ -106,7 +106,7 @@
             this.MinimumSize = new System.Drawing.Size(608, 400);
             this.Name = "Form608";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Расписание 608 аудитории";
+            this.Text = "Расписание занятий 608 аудитории";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form608_FormClosed);
             this.Load += new System.EventHandler(this.Form608_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();

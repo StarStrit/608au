@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Test
 {
-    public partial class Form608 : Form
+    public partial class Classes : Form
     {
         private Button graphic_Form608; // создание глобальной закрытой ссылки на кнопку
         private int nedely_rasp; // для номера недели
@@ -18,7 +18,7 @@ namespace Test
                 pi.SetValue(c, value, null);
         }
         #endregion
-        public Form608(Button graphic_Main, int nedelyrasp) // получаем исходную ссылку на кнопку
+        public Classes(Button graphic_Main, int nedelyrasp) // получаем исходную ссылку на кнопку
         {
             graphic_Form608 = graphic_Main; // принимаем ссылку на кнопку
             nedely_rasp = nedelyrasp; // получаем номер недели

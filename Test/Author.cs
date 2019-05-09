@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 namespace Test
 {
-    public partial class About : Form
+    public partial class Author : Form
     {
-        public About()
+        public Author()
         {
             InitializeComponent();
         }

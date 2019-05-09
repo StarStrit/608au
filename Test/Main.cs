@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Word = Microsoft.Office.Interop.Word;
 using System.Drawing;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Test
 {
@@ -177,7 +178,7 @@ namespace Test
                     MessageBox.Show("Нет соединения с расписанием ВСГУТУ.\nРасписание не доступно.", "Ошибка соединения", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            else // если программа уже была запущена ранее и есть настройки были изменены
+            else // если программа уже была запущена ранее и если настройки были изменены
             {
                 label1.Text = "Дата обновления: " + Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy"); // указываем дату обновления расписания
                 #region Проверяем наличие каталога и файла с данными
@@ -690,18 +691,18 @@ namespace Test
         }
         private void graphic608_Click(object sender, EventArgs e)
         {
-            Form608 f608 = new Form608(this.graphic608, this.nedely_rasp); // создаем объект второй формы и передаем ей состояние кнопки формы, html сайт и день недели
+            Classes f608 = new Classes(this.graphic608, this.nedely_rasp); // создаем объект второй формы и передаем ей состояние кнопки формы, html сайт и день недели
             f608.Show();
             graphic608.Enabled = false; // блокируем кнопку, чтобы не открывать форму по несколько раз
         }
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            About about_Form = new About();
-            about_Form.ShowDialog();
+            Author author_Form = new Author();
+            author_Form.ShowDialog();
         }
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
-            toolTip1.SetToolTip(pictureBox1, "Отображает состояние подключения, где:\n     * Обычный индикатор - подключен к сайту ВСГУТУ;\n     * Зачёркнутый индикатор - нет подключение к сайту ВСГУТУ."); // всплывающая подсказка
+            toolTip1.SetToolTip(pictureBox1, "Отображает состояние подключения, где:\n     * Обычный индикатор - подключен к сайту ВСГУТУ;\n     * Зачёркнутый индикатор - нет подключения к сайту ВСГУТУ."); // всплывающая подсказка
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -1007,6 +1008,18 @@ namespace Test
                 }
             }
         }
+        private void ОПрограммеToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                File.WriteAllBytes("Справка 608au.chm", Properties.Resources.reference);
+                Process.Start("Справка 608au.chm");
+            }
+            catch
+            {
+                MessageBox.Show("Справка уже открыта!\nСначала закройте предыдущую справку, затем открывайте новую.\n\nСовет: не стоит открывать одно и то же приложение одновременно несколько раз, пожалейте ресурсы компьютера! ;)", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
     }
 }
 
@@ -1015,3 +1028,5 @@ namespace Test
 // Добавить Артефакт и отзыв о программе (форма для заполнения со звездами, пожеланиями и отправкой мне на почту)
 // Сделать загрузку программы красивее, подумать о Flat стиле
 // Сделать сканирования колледжа правильным (нет типа пары - пр., лек., лаб.)
+// Сделать отображение последних изменений в расписании. Чтобы видеть разницу ДО и ПОСЛЕ
+// Поправить запуск ворда (место его запуска)

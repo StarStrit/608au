@@ -1,6 +1,6 @@
 ﻿namespace Test
 {
-    partial class About
+    partial class Author
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Author));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -105,9 +105,9 @@
             this.label4.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label4.Location = new System.Drawing.Point(6, 79);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 16);
+            this.label4.Size = new System.Drawing.Size(101, 16);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Заказчик:";
+            this.label4.Text = "Сделано для:";
             // 
             // label5
             // 
@@ -310,8 +310,8 @@
             // 
             this.toolStripStatusLabel1.ForeColor = System.Drawing.SystemColors.Window;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(188, 17);
-            this.toolStripStatusLabel1.Text = "               © Все права защищены!";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(180, 17);
+            this.toolStripStatusLabel1.Text = "                     © Авторские права!";
             // 
             // panel1
             // 
@@ -356,7 +356,7 @@
             this.panel3.Size = new System.Drawing.Size(247, 83);
             this.panel3.TabIndex = 27;
             // 
-            // About
+            // Author
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -373,7 +373,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "About";
+            this.Name = "Author";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Автор";

@@ -101,12 +101,12 @@ namespace Test.Properties {
         }
         
         /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap message {
+        internal static byte[] reference {
             get {
-                object obj = ResourceManager.GetObject("message", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("reference", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
