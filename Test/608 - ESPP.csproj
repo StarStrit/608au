@@ -29,9 +29,9 @@
     <PublisherName>AlexSoft</PublisherName>
     <MinimumRequiredVersion>0.9.9.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.1.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
+    <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -177,6 +177,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\folder.png" />
     <EmbeddedResource Include="Resources\author.png" />
     <EmbeddedResource Include="Resources\info.png" />
     <EmbeddedResource Include="Resources\delete.png" />

@@ -44,6 +44,7 @@ namespace Test
                 dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
             #endregion
             #region Неделя 1
+            dataGridView2.Rows[0].Cells[3].Style.ForeColor = Color.White;
             dataGridView2.Rows[0].Cells[3].Value = "1 неделя";
             dataGridView2.Rows[1].Cells[0].Value = "Пары";
             dataGridView2.Rows[1].Cells[1].Value = "1-я";
@@ -100,6 +101,7 @@ namespace Test
                 }
             #endregion
             #region Неделя 2
+            dataGridView2.Rows[9].Cells[3].Style.ForeColor = Color.White;
             dataGridView2.Rows[9].Cells[3].Value = "2 неделя";
             dataGridView2.Rows[10].Cells[0].Value = "Пары";
             dataGridView2.Rows[10].Cells[1].Value = "1-я";
