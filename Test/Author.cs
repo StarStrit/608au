@@ -20,7 +20,7 @@ namespace Test
             {
                 // Копируем текст в буфер и выводим подсказку
                 Clipboard.SetText(linkLabel1.Text);
-                prompt.Show("Текст помещен в буфер обмена.", linkLabel1, e.X * 0, e.Y * 0 + 19);
+                prompt.Show("Текст скопирован.", linkLabel1, e.X * 0, e.Y * 0 + 19);
             }
             if (e.Button == MouseButtons.Left)
             {

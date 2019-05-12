@@ -9,8 +9,8 @@ namespace Test
     public partial class Classes : Form
     {
         private Button graphic_Form608; // создание глобальной закрытой ссылки на кнопку
-        private int nedely_rasp; // для номера недели
-        #region Унаследование для DoubleBuffered - включение двойной буфферизации для быстрой перерисовки dataGridView1
+        private int nedely_table; // для номера недели
+        #region Включение двойной буфферизации для быстрой перерисовки таблицы
         void SetDoubleBuffered2(Control c, bool value)
         {
             PropertyInfo pi = typeof(Control).GetProperty("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic);
@@ -18,10 +18,11 @@ namespace Test
                 pi.SetValue(c, value, null);
         }
         #endregion
-        public Classes(Button graphic_Main, int nedelyrasp) // получаем исходную ссылку на кнопку
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        public Classes(Button graphic_Main, int nedelytable) // получаем исходную ссылку на кнопку
         {
             graphic_Form608 = graphic_Main; // принимаем ссылку на кнопку
-            nedely_rasp = nedelyrasp; // получаем номер недели
+            nedely_table = nedelytable; // получаем номер недели
             InitializeComponent();
         }
         private void Form608_Load(object sender, EventArgs e)
@@ -67,39 +68,6 @@ namespace Test
             dataGridView2.Rows[7].Cells[0].Value = "Птн";
             dataGridView2.Rows[8].Cells[0].Value = "Сбт";
             #endregion
-            #region Выделяем цветом активную пару - 1 неделя
-            var date_time = ""; // хранит время и день недели, взятое из таблицы
-            // проверяем, соответствует ли выбранная неделя с текущей: нет - выделение отменяем; да - выделение начинаем
-            if (nedely_rasp == 0)
-                // выделяем текущий день недели
-                for (int i = 3; i < 9; i++)
-                {
-                    date_time = dataGridView2.Rows[i].Cells[0].Value.ToString();
-                    if (DateTime.Today.ToString("ddd") == date_time.Remove(2, 1))
-                    {
-                        dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.Yellow;
-                        // выделяем текущее время дня и пары
-                        for (int j = 1; j < 7; j++)
-                        {
-                            date_time = dataGridView2.Rows[2].Cells[j].Value.ToString(); date_time = date_time.Remove(0, 6); // получаем нужный формат времени для TimeSpan
-                            if (DateTime.Now.TimeOfDay <= new TimeSpan(Convert.ToInt32(date_time.Remove(2, 3)), Convert.ToInt32(date_time.Remove(0, 3)), 0))
-                            {
-                                // если время от 0.00 и до 8.59, то пару не выделем
-                                if (DateTime.Now.TimeOfDay < new TimeSpan(9, 0, 0))
-                                {
-                                    i = 9; // глушилка цикла 1
-                                    break; // глушилка цикла 2
-                                }
-                                // иначе, пару выделяем по текущему времени в таблице
-                                dataGridView2.Rows[2].Cells[j].Style.BackColor = Color.Yellow;
-                                dataGridView2.Rows[i].Cells[j].Style.BackColor = Color.Yellow;
-                                i = 9; // глушилка цикла 1
-                                break; // глушилка цикла 2
-                            }
-                        }
-                    }
-                }
-            #endregion
             #region Неделя 2
             dataGridView2.Rows[9].Cells[3].Style.ForeColor = Color.White;
             dataGridView2.Rows[9].Cells[3].Value = "2 неделя";
@@ -124,39 +92,7 @@ namespace Test
             dataGridView2.Rows[16].Cells[0].Value = "Птн";
             dataGridView2.Rows[17].Cells[0].Value = "Сбт";
             #endregion
-            #region Выделяем цветом активную пару - 2 неделя
-            var date_time2 = ""; // хранит время и день недели, взятое из таблицы
-            // проверяем, соответствует ли выбранная неделя с текущей: нет - выделение отменяем; да - выделение начинаем
-            if (nedely_rasp == 1)
-                // выделяем текущий день недели
-                for (int i = 12; i < 18; i++)
-                {
-                    date_time2 = dataGridView2.Rows[i].Cells[0].Value.ToString();
-                    if (DateTime.Today.ToString("ddd") == date_time2.Remove(2, 1))
-                    {
-                        dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.Yellow;
-                        // выделяем текущее время дня и пары
-                        for (int j = 1; j < 7; j++)
-                        {
-                            date_time2 = dataGridView2.Rows[11].Cells[j].Value.ToString(); date_time2 = date_time2.Remove(0, 6); // получаем нужный формат времени для TimeSpan
-                            if (DateTime.Now.TimeOfDay <= new TimeSpan(Convert.ToInt32(date_time2.Remove(2, 3)), Convert.ToInt32(date_time2.Remove(0, 3)), 0))
-                            {
-                                // если время от 0.00 и до 8.59, то пару не выделем
-                                if (DateTime.Now.TimeOfDay < new TimeSpan(9, 0, 0))
-                                {
-                                    i = 18; // глушилка цикла 1
-                                    break; // глушилка цикла 2
-                                }
-                                // иначе, пару выделяем по текущему времени в таблице
-                                dataGridView2.Rows[11].Cells[j].Style.BackColor = Color.Yellow;
-                                dataGridView2.Rows[i].Cells[j].Style.BackColor = Color.Yellow;
-                                i = 18; // глушилка цикла 1
-                                break; // глушилка цикла 2
-                            }
-                        }
-                    }
-                }
-            #endregion
+            HighlightColor(); // выделяем цветом активную пару недели
             #region Заполняем график занятий 608 ау.
             string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
             string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
@@ -269,6 +205,55 @@ namespace Test
             // запрещаем выделение строки с заголовком недель
             if (e.RowIndex == 0 || e.RowIndex == 9)
                 dataGridView2.ClearSelection();
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        private void HighlightColor()
+        {
+            var date_time = "";
+            int nedelyA = 0, nedelyB = 0, nedelyC = 0;
+            #region Проверяем неделю расписания
+            if (nedely_table == 0) // первая неделя расписания
+            {
+                nedelyA = 3;
+                nedelyB = 9;
+                nedelyC = 2;
+            }
+            else // втораяя неделя расписания
+            {
+                nedelyA = 12;
+                nedelyB = 18;
+                nedelyC = 11;
+            }
+            #endregion
+            #region Выделяем текущий день недели
+            for (int i = nedelyA; i < nedelyB; i++)
+            {
+                date_time = dataGridView2.Rows[i].Cells[0].Value.ToString();
+                if (DateTime.Today.ToString("ddd") == date_time.Remove(2, 1))
+                {
+                    dataGridView2.Rows[i].Cells[0].Style.BackColor = Color.Yellow;
+                    // выделяем текущее время дня и пары
+                    for (int j = 1; j < 7; j++)
+                    {
+                        date_time = dataGridView2.Rows[nedelyC].Cells[j].Value.ToString(); date_time = date_time.Remove(0, 6); // получаем нужный формат времени для TimeSpan
+                        if (DateTime.Now.TimeOfDay <= new TimeSpan(Convert.ToInt32(date_time.Remove(2, 3)), Convert.ToInt32(date_time.Remove(0, 3)), 0))
+                        {
+                            // если время от 0.00 и до 8.59, то пару не выделяем
+                            if (DateTime.Now.TimeOfDay < new TimeSpan(9, 0, 0))
+                            {
+                                i = nedelyB; // глушилка цикла 1
+                                break; // глушилка цикла 2
+                            }
+                            // иначе, пару выделяем по текущему времени в таблице
+                            dataGridView2.Rows[nedelyC].Cells[j].Style.BackColor = Color.Yellow;
+                            dataGridView2.Rows[i].Cells[j].Style.BackColor = Color.Yellow;
+                            i = nedelyB; // глушилка цикла 1
+                            break; // глушилка цикла 2
+                        }
+                    }
+                }
+            }
+            #endregion
         }
     }
 }
