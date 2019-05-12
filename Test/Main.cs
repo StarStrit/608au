@@ -24,10 +24,10 @@ namespace Test
                 pi.SetValue(c, value, null);
         }
         #endregion
+        ///////////////////////////////////////////////////////////////////////////////////////////
         public ESPPForm()
         {
             InitializeComponent();
-            timer_updateStatus.Start(); // запускаем таймер для постоянной проверки соединения с сайтом
             #region Выделяем ячейку прямоугольником под указателем
             Rectangle rect = new Rectangle(0, 0, 0, 0);
             dataGridView1.CellPainting += (s, e) =>
@@ -46,13 +46,12 @@ namespace Test
         private void ESPPForm_Shown(object sender, EventArgs e)
         {
             timer_updateStatus.Start(); // таймер для проверки соединения с сайтом и обновления расписания
-            if (Properties.Settings.Default.starter == 0 || Properties.Settings.Default.number_nedel == "0") // если запускаем программу первый раз или настройки стандартные
+            if (Properties.Settings.Default.starter == 0 | Properties.Settings.Default.number_nedel == "0") // если запускаем программу первый раз или настройки стандартные
             {
                 try
                 {
                     HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
                     HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse(); // проверка соединения с сайтом ВСГУТУ
-
                     if (HttpStatusCode.OK == test_response.StatusCode) // если соединение установлено
                     {
                         #region Узнаем номер кафедры
@@ -180,13 +179,37 @@ namespace Test
             else // если программа уже была запущена ранее и если настройки были изменены
             {
                 label1.Text = "Дата обновления: " + Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy"); // указываем дату обновления расписания
+                #region Проверка наличия интернета
+                try
+                {
+                    HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                    HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse();
+                    if (HttpStatusCode.OK == test_response.StatusCode)
+                    {
+                        pictureBox1.Size = status_con.Size;
+                        pictureBox1.Image = status_con;
+                        pictureBox1.Invalidate();
+                        menu_checkUpdate.Enabled = true;
+                    }
+                }
+                catch
+                {
+                    pictureBox1.Size = status_dis.Size;
+                    pictureBox1.Image = status_dis;
+                    pictureBox1.Invalidate();
+                    menu_checkUpdate.Enabled = false;
+                }
+                Properties.Settings.Default.starter++;
+                Properties.Settings.Default.Save();
+                startCount.Text = "Запусков программы: " + Properties.Settings.Default.starter;
+                #endregion
                 #region Проверяем наличие каталога и файла с данными
                 string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
                 string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
-                if (!Directory.Exists(path_file) || !File.Exists(file_rasp))
+                if (!Directory.Exists(path_file) | !File.Exists(file_rasp))
                 {
                     MessageBox.Show("Внимание, данные пропали!\n\n" +
-                        "Скорей всего они были случайно удалены или повреждены, но не переживайте.\n" +
+                        "Скорей всего они были случайно удалены/повреждены или Вы открываете программу первый раз, но не переживайте.\n" +
                         "Будет произведён автоматический сброс параметров и программа перезапустится.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Properties.Settings.Default.starter = 0;
                     Properties.Settings.Default.Save();
@@ -223,367 +246,15 @@ namespace Test
                 SetDoubleBuffered(dataGridView1, true); // включаем быструю перерисовку таблицы
                 graphic608.Enabled = true;
                 #endregion
-                #region Проверка наличия интернета
-                try
-                {
-                    HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
-                    HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse();
-                    if (HttpStatusCode.OK == test_response.StatusCode)
-                    {
-                        pictureBox1.Size = status_con.Size;
-                        pictureBox1.Image = status_con;
-                        pictureBox1.Invalidate();
-                        menu_checkUpdate.Enabled = true;
-                    }
-                }
-                catch
-                {
-                    pictureBox1.Size = status_dis.Size;
-                    pictureBox1.Image = status_dis;
-                    pictureBox1.Invalidate();
-                    menu_checkUpdate.Enabled = false;
-                }
-                Properties.Settings.Default.starter++;
-                Properties.Settings.Default.Save();
-                startCount.Text = "Запусков программы: " + Properties.Settings.Default.starter;
-                #endregion
             }
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            #region Внесение базового рассписания в dataGridView
-            dataGridView1.Rows.Clear();
-            dataGridView1.RowCount = 0; dataGridView1.RowCount = 7;
-            for (int i = 0; i < 7; i++)
-                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.LightSteelBlue;
-            for (int i = 1; i < 7; i++)
-            {
-                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
-                dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
-            }
-            dataGridView1.Rows[0].Cells[0].Value = "Время";
-            dataGridView1.Rows[0].Cells[1].Value = "09:00-10:35";
-            dataGridView1.Rows[0].Cells[2].Value = "10:45-12:20";
-            dataGridView1.Rows[0].Cells[3].Value = "13:00-14:35";
-            dataGridView1.Rows[0].Cells[4].Value = "14:45-16:20";
-            dataGridView1.Rows[0].Cells[5].Value = "16:25-18:00";
-            dataGridView1.Rows[0].Cells[6].Value = "18:05-19:40";
-            dataGridView1.Rows[1].Cells[0].Value = "Пнд";
-            dataGridView1.Rows[2].Cells[0].Value = "Втр";
-            dataGridView1.Rows[3].Cells[0].Value = "Срд";
-            dataGridView1.Rows[4].Cells[0].Value = "Чтв";
-            dataGridView1.Rows[5].Cells[0].Value = "Птн";
-            dataGridView1.Rows[6].Cells[0].Value = "Сбт";
-            #endregion
-            #region Выделяем цветом активную пару/время/день, которая идёт сейчас
-            var date_time = ""; // хранит время и день недели, взятое из таблицы
-            // проверяем, соответствует ли выбранная неделя с текущей: нет - выделение отменяем; да - выделение начинаем
-            if ((comboBox2.SelectedIndex == 0 && nedely_rasp == 0) || (comboBox2.SelectedIndex == 1 && nedely_rasp == 1))
-                // выделяем текущую пару
-                for (int i = 1; i < 7; i++)
-                {
-                    date_time = dataGridView1.Rows[i].Cells[0].Value.ToString();
-                    if (DateTime.Today.ToString("ddd") == date_time.Remove(2, 1))
-                    {
-                        dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Yellow;
-                        // выделяем текущее время дня и пары
-                        for (int j = 1; j < 7; j++)
-                        {
-                            date_time = dataGridView1.Rows[0].Cells[j].Value.ToString(); date_time = date_time.Remove(0, 6); // получаем нужный формат времени для TimeSpan
-                            if (DateTime.Now.TimeOfDay <= new TimeSpan(Convert.ToInt32(date_time.Remove(2, 3)), Convert.ToInt32(date_time.Remove(0, 3)), 0))
-                            {
-                                // если время от 0.00 и до 8.59, то пару не выделем
-                                if (DateTime.Now.TimeOfDay < new TimeSpan(9, 0, 0))
-                                {
-                                    i = 7; // глушилка цикла 1
-                                    break; // глушилка цикла 2
-                                }
-                                // иначе, пару выделяем по текущему времени в таблице
-                                dataGridView1.Rows[0].Cells[j].Style.BackColor = Color.Yellow;
-                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Yellow;
-                                i = 7; // глушилка цикла 1
-                                break; // глушилка цикла 2
-                            }
-                        }
-                    }
-                }
-            #endregion
-            #region Составление расписания при выборе преподавателя
-            string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
-            string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
-            StreamReader rasp_reader = new StreamReader(file_rasp);
-
-            string raspstr = "";
-            while (raspstr != null)
-            {
-                raspstr = rasp_reader.ReadLine();
-                // ищем тег преподавателя в файле
-                if ((raspstr != null) && (raspstr.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
-                {
-                    // сверяем препода из файла с преподом из comboBox 
-                    if ((raspstr.Substring(raspstr.IndexOf("COLOR=\"#ff00ff\"> ") + 17, raspstr.Length - raspstr.IndexOf("COLOR=\"#ff00ff\"> ") - 28) == comboBox1.Text))
-                    {
-                        // составляем рассписание препода, пока не закончилась нужная неделя
-                        while ((raspstr != null) && (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"") == -1))
-                        {
-                            raspstr = rasp_reader.ReadLine();
-                            #region 1 неделя
-                            // если выбрана 1 неделя
-                            if ((raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "1 неделя"))
-                            {
-                                while ((raspstr != null) && (raspstr != "</TR>"))
-                                {
-                                    for (int i = 1; i <= 6; i++)
-                                    {
-                                        while (raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1) // тег для поиска дня недели
-                                            raspstr = rasp_reader.ReadLine();
-                                        raspstr = rasp_reader.ReadLine();
-                                        for (int j = 1; j != 7; j++)
-                                        {
-                                            raspstr = rasp_reader.ReadLine();
-                                            // меняем цвет ячейки пары, если она идет в 608 ау.
-                                            if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
-                                            // если пар нет
-                                            if (raspstr.IndexOf("\">_") >= 0)
-                                                dataGridView1.Rows[i].Cells[j].Value = "-";
-                                            else // или они есть
-                                            {
-                                                #region Форматирование текста
-                                                raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\">") + 15, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\">") - 27);
-                                                raspstr = raspstr.Replace("    ", "\n"); // заменя пробелов на переход новой строки
-                                                raspstr = raspstr.Replace("...", ""); // замена троеточия на пустой символ
-                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
-                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
-                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
-                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
-                                                #endregion
-                                                dataGridView1.Rows[i].Cells[j].Value = raspstr;
-                                            }
-                                            raspstr = rasp_reader.ReadLine();
-                                        }
-                                    }
-                                    rasp_reader.Dispose();
-                                    return;
-                                }
-                            }
-                            #endregion
-                            #region 2 неделя
-                            // если выбрана 2 неделя
-                            if ((raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "2 неделя"))
-                            {
-                                while ((raspstr != null) && (raspstr != "</TR>"))
-                                {
-                                    for (int i = 1; i <= 6; i++)
-                                    {
-                                        while (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
-                                            raspstr = rasp_reader.ReadLine();
-                                        raspstr = rasp_reader.ReadLine();
-                                        for (int j = 1; j != 7; j++)
-                                        {
-                                            raspstr = rasp_reader.ReadLine();
-                                            if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
-                                            if (raspstr.IndexOf("\"> _") >= 0)
-                                                dataGridView1.Rows[i].Cells[j].Value = "-";
-                                            else
-                                            {
-                                                #region Форматирование текста
-                                                raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\"> ") + 16, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\"> ") - 28);
-                                                raspstr = raspstr.Replace("    ", "\n");
-                                                raspstr = raspstr.Replace("...", "");
-                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
-                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
-                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
-                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
-                                                #endregion
-                                                dataGridView1.Rows[i].Cells[j].Value = raspstr;
-                                            }
-                                            raspstr = rasp_reader.ReadLine();
-                                        }
-                                    }
-                                    rasp_reader.Dispose();
-                                    return;
-                                }
-                            }
-                            #endregion
-                        }
-                    }
-                }
-            }
-            #endregion
+            RedrawTable();
         }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            #region Внесение базового рассписания в dataGridView
-            dataGridView1.Rows.Clear();
-            dataGridView1.RowCount = 0; dataGridView1.RowCount = 7;
-            for (int i = 0; i < 7; i++)
-                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.LightSteelBlue;
-            for (int i = 1; i < 7; i++)
-            {
-                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
-                dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
-            }
-            dataGridView1.Rows[0].Cells[0].Value = "Время";
-            dataGridView1.Rows[0].Cells[1].Value = "09:00-10:35";
-            dataGridView1.Rows[0].Cells[2].Value = "10:45-12:20";
-            dataGridView1.Rows[0].Cells[3].Value = "13:00-14:35";
-            dataGridView1.Rows[0].Cells[4].Value = "14:45-16:20";
-            dataGridView1.Rows[0].Cells[5].Value = "16:25-18:00";
-            dataGridView1.Rows[0].Cells[6].Value = "18:05-19:40";
-            dataGridView1.Rows[1].Cells[0].Value = "Пнд";
-            dataGridView1.Rows[2].Cells[0].Value = "Втр";
-            dataGridView1.Rows[3].Cells[0].Value = "Срд";
-            dataGridView1.Rows[4].Cells[0].Value = "Чтв";
-            dataGridView1.Rows[5].Cells[0].Value = "Птн";
-            dataGridView1.Rows[6].Cells[0].Value = "Сбт";
-            #endregion
-            #region Выделяем цветом активную пару/время/день, которая идёт сейчас
-            var date_time = ""; // хранит время и день недели, взятое из таблицы
-            // проверяем, соответствует ли выбранная неделя с текущей: нет - выделение отменяем; да - выделение начинаем
-            if ((comboBox2.SelectedIndex == 0 && nedely_rasp == 0) || (comboBox2.SelectedIndex == 1 && nedely_rasp == 1))
-                // выделяем текущую пару
-                for (int i = 1; i < 7; i++)
-                {
-                    date_time = dataGridView1.Rows[i].Cells[0].Value.ToString();
-                    if (DateTime.Today.ToString("ddd") == date_time.Remove(2, 1))
-                    {
-                        dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Yellow;
-                        // выделяем текущее время дня и пары
-                        for (int j = 1; j < 7; j++)
-                        {
-                            date_time = dataGridView1.Rows[0].Cells[j].Value.ToString(); date_time = date_time.Remove(0, 6); // получаем нужный формат времени для TimeSpan
-                            if (DateTime.Now.TimeOfDay <= new TimeSpan(Convert.ToInt32(date_time.Remove(2, 3)), Convert.ToInt32(date_time.Remove(0, 3)), 0))
-                            {
-                                // если время от 0.00 и до 8.59, то пару не выделем
-                                if (DateTime.Now.TimeOfDay < new TimeSpan(9, 0, 0))
-                                {
-                                    i = 7; // глушилка цикла 1
-                                    break; // глушилка цикла 2
-                                }
-                                // иначе, пару выделяем по текущему времени в таблице
-                                dataGridView1.Rows[0].Cells[j].Style.BackColor = Color.Yellow;
-                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Yellow;
-                                i = 7; // глушилка цикла 1
-                                break; // глушилка цикла 2
-                            }
-                        }
-                    }
-                }
-            #endregion
-            #region Составление расписания при выборе преподавателя
-            string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
-            string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
-            StreamReader rasp_reader = new StreamReader(file_rasp);
-
-            string raspstr = "";
-            while (raspstr != null)
-            {
-                raspstr = rasp_reader.ReadLine();
-                // ищем тег преподавателя в файле
-                if ((raspstr != null) && (raspstr.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
-                {
-                    // сверяем препода из файла с преподом из comboBox 
-                    if ((raspstr.Substring(raspstr.IndexOf("COLOR=\"#ff00ff\"> ") + 17, raspstr.Length - raspstr.IndexOf("COLOR=\"#ff00ff\"> ") - 28) == comboBox1.Text))
-                    {
-                        // составляем рассписание препода, пока не закончилась нужная неделя
-                        while ((raspstr != null) && (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"") == -1))
-                        {
-                            raspstr = rasp_reader.ReadLine();
-                            #region 1 неделя
-                            // если выбрана 1 неделя
-                            if ((raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "1 неделя"))
-                            {
-                                while ((raspstr != null) && (raspstr != "</TR>"))
-                                {
-                                    for (int i = 1; i <= 6; i++)
-                                    {
-                                        while (raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1) // тег для поиска дня недели
-                                            raspstr = rasp_reader.ReadLine();
-                                        raspstr = rasp_reader.ReadLine();
-                                        for (int j = 1; j != 7; j++)
-                                        {
-                                            raspstr = rasp_reader.ReadLine();
-                                            // меняем цвет ячейки пары, если она идет в 608 ау.
-                                            if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
-                                            // если пар нет
-                                            if (raspstr.IndexOf("\">_") >= 0)
-                                                dataGridView1.Rows[i].Cells[j].Value = "-";
-                                            else // или они есть
-                                            {
-                                                #region Форматирование текста
-                                                raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\">") + 15, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\">") - 27);
-                                                raspstr = raspstr.Replace("    ", "\n");
-                                                raspstr = raspstr.Replace("...", "");
-                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
-                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
-                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
-                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
-                                                #endregion
-                                                dataGridView1.Rows[i].Cells[j].Value = raspstr;
-                                            }
-                                            raspstr = rasp_reader.ReadLine();
-                                        }
-                                    }
-                                    rasp_reader.Dispose();
-                                    return;
-                                }
-                            }
-                            #endregion
-                            #region 2 неделя
-                            // если выбрана 2 неделя
-                            if ((raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "2 неделя"))
-                            {
-                                while ((raspstr != null) && (raspstr != "</TR>"))
-                                {
-                                    for (int i = 1; i <= 6; i++)
-                                    {
-                                        while (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
-                                            raspstr = rasp_reader.ReadLine();
-                                        raspstr = rasp_reader.ReadLine();
-                                        for (int j = 1; j != 7; j++)
-                                        {
-                                            raspstr = rasp_reader.ReadLine();
-                                            if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
-                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
-                                            if (raspstr.IndexOf("\"> _") >= 0)
-                                                dataGridView1.Rows[i].Cells[j].Value = "-";
-                                            else
-                                            {
-                                                #region Форматирование текста
-                                                raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\"> ") + 16, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\"> ") - 28);
-                                                raspstr = raspstr.Replace("    ", "\n");
-                                                raspstr = raspstr.Replace("...", "");
-                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
-                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
-                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
-                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
-                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
-                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
-                                                #endregion
-                                                dataGridView1.Rows[i].Cells[j].Value = raspstr;
-                                            }
-                                            raspstr = rasp_reader.ReadLine();
-                                        }
-                                    }
-                                    rasp_reader.Dispose();
-                                    return;
-                                }
-                            }
-                            #endregion
-                        }
-                    }
-                }
-            }
-            #endregion
+            RedrawTable();
         }
         private void сформироватьГрафикЗанятийДляПечатиToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -723,123 +394,15 @@ namespace Test
         {
             if (pictureBox1.Image == status_con)
             {
-                var request_caf39 = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
-                request_caf39.UserAgent = "Rasp. 608";
+                var request_caf = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
+                request_caf.UserAgent = "Rasp. 608";
                 DateTime date;
-                using (var get_date = (HttpWebResponse)request_caf39.GetResponse())
+                using (var get_date = (HttpWebResponse)request_caf.GetResponse())
                     date = get_date.LastModified;
-                if (date != Properties.Settings.Default.date_rasp)
+                if (date != Properties.Settings.Default.date_rasp && menu_checkUpdate.Enabled != false)
                 {
-                    request_caf39.Abort();
-                    menu_checkUpdate.Enabled = false;
-                    var question = MessageBox.Show("Обнаружено новое расписание.\nХотите обновить текущее расписание?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (question == DialogResult.Yes)
-                    {
-                        #region Переводим программу в режим ожидания
-                        расписаниеToolStripMenuItem.Enabled = false;
-                        this.Cursor = Cursors.WaitCursor;
-                        graphic608.Enabled = false;
-                        comboBox1.Enabled = false;
-                        comboBox2.Enabled = false;
-                        comboBox3.Enabled = false;
-                        dataGridView1.Rows.Clear();
-                        dataGridView1.Enabled = false;
-                        // сохранение новой даты расписания
-                        Properties.Settings.Default.date_rasp = date;
-                        Properties.Settings.Default.Save();
-                        #endregion
-                        try
-                        {
-                            HttpWebRequest test_link_ = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
-                            HttpWebResponse test_response_ = (HttpWebResponse)test_link_.GetResponse();
-                            if (HttpStatusCode.OK == test_response_.StatusCode)
-                            {
-                                test_response_.Close();
-                                test_link_.Abort();
-                                #region Проверяем наличие кафедры ЭСППиСХ
-                                WebClient CafClient_ = new WebClient();
-                                Stream CafStream_ = CafClient_.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
-                                StreamReader CafReader_ = new StreamReader(CafStream_, System.Text.Encoding.Default);
-                                string Caf_ = "";
-                                string NomerCaf = "";
-                                while (!CafReader_.EndOfStream)
-                                {
-                                    Caf_ = CafReader_.ReadLine();
-                                    if (Caf_.IndexOf("Электроснабжение промышленных предприятий") >= 0)
-                                    {
-                                        NomerCaf = Caf_.Substring(Caf_.IndexOf("<a href=\"") + 9, Caf_.IndexOf("<a href=\""));
-                                        if (NomerCaf != Properties.Settings.Default.number_caf)
-                                        {
-                                            Properties.Settings.Default.number_caf = NomerCaf;
-                                            Properties.Settings.Default.Save();
-                                        }
-                                        break;
-                                    }
-                                    else if (CafReader_.EndOfStream)
-                                    {
-                                        MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nОшибка обновления!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    }
-                                }
-                                CafReader_.Close();
-                                CafStream_.Close();
-                                CafClient_.Dispose();
-                                #endregion
-                                #region Загрузка нового расписания
-                                // отправка запроса на подключение к сайту 
-                                HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + Properties.Settings.Default.number_caf + ".htm");
-                                HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse();
-                                Stream RaspStr = RaspRes.GetResponseStream();
-                                StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default);
-                                // создание каталога и файла расписания
-                                string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
-                                if (!Directory.Exists(path_file))
-                                    Directory.CreateDirectory(path_file);
-                                string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
-                                StreamWriter raspfile_write = new StreamWriter(file_rasp);
-                                // загрузка данных с сайта и сохранение
-                                string web_esstu = "";
-                                web_esstu = RaspRead.ReadToEnd();
-                                raspfile_write.WriteLine(web_esstu);
-                                // чистка ресурсов
-                                raspfile_write.Dispose();
-                                RaspRead.Dispose();
-                                RaspStr.Dispose();
-                                RaspRes.Close();
-                                RaspReq.Abort();
-                                #endregion
-                                #region Узнаем текущую неделю расписания
-                                WebClient client = new WebClient();
-                                Stream data = client.OpenRead("https://esstu.ru/index.htm");
-                                StreamReader reader = new StreamReader(data);
-                                string response2 = "";
-                                while (!reader.EndOfStream)
-                                {
-                                    response2 = reader.ReadLine();
-                                    if (response2.IndexOf("\"header-date\"") >= 0)
-                                    {
-                                        response2 = response2.Substring(response2.IndexOf("\"header-date\"") + 14, response2.Length - 47);
-                                        Properties.Settings.Default.number_nedel = response2;
-                                        Properties.Settings.Default.Save();
-                                        break;
-                                    }
-                                }
-                                reader.Dispose();
-                                data.Dispose();
-                                client.Dispose();
-                                #endregion
-                                #region Завершаем обновление
-                                MessageBox.Show("Расписание обновлено.\nПрограмма будет перезапущена.", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                Application.Restart();
-                                Environment.Exit(1);
-                                #endregion
-                            }
-                        }
-                        catch (WebException)
-                        {
-                            MessageBox.Show("Пропало соединение с расписанием ВСГУТУ.\nОбновление не завершено, попробуйте позже.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    menu_checkUpdate.Enabled = true;
+                    request_caf.Abort();
+                    UpdateTable(date);
                 }
                 else MessageBox.Show("У вас актуальная версия расписания.\nОбновление не требуется.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -885,123 +448,15 @@ namespace Test
                     }
                     #endregion
                     #region Обновление расписания
-                    var request_caf39 = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
-                    request_caf39.UserAgent = "Rasp. 608";
+                    var request_caf = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/Caf39.htm");
+                    request_caf.UserAgent = "Rasp. 608";
                     DateTime date;
-                    using (var get_date = (HttpWebResponse)request_caf39.GetResponse())
+                    using (var get_date = (HttpWebResponse)request_caf.GetResponse())
                         date = get_date.LastModified;
-                    if (date != Properties.Settings.Default.date_rasp)
+                    if (date != Properties.Settings.Default.date_rasp && menu_checkUpdate.Enabled != false)
                     {
-                        request_caf39.Abort();
-                        menu_checkUpdate.Enabled = false;
-                        var question = MessageBox.Show("Обнаружено новое расписание.\nХотите обновить текущее расписание?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                        if (question == DialogResult.Yes)
-                        {
-                            #region Переводим программу в режим ожидания
-                            расписаниеToolStripMenuItem.Enabled = false;
-                            this.Cursor = Cursors.WaitCursor;
-                            graphic608.Enabled = false;
-                            comboBox1.Enabled = false;
-                            comboBox2.Enabled = false;
-                            comboBox3.Enabled = false;
-                            dataGridView1.Rows.Clear();
-                            dataGridView1.Enabled = false;
-                            // сохранение новой даты расписания
-                            Properties.Settings.Default.date_rasp = date;
-                            Properties.Settings.Default.Save();
-                            #endregion
-                            try
-                            {
-                                HttpWebRequest test_link_ = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
-                                HttpWebResponse test_response_ = (HttpWebResponse)test_link_.GetResponse();
-                                if (HttpStatusCode.OK == test_response_.StatusCode)
-                                {
-                                    test_response_.Close();
-                                    test_link_.Abort();
-                                    #region Проверяем наличие кафедры ЭСППиСХ
-                                    WebClient CafClient_ = new WebClient();
-                                    Stream CafStream_ = CafClient_.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
-                                    StreamReader CafReader_ = new StreamReader(CafStream_, System.Text.Encoding.Default);
-                                    string Caf_ = "";
-                                    string NomerCaf = "";
-                                    while (!CafReader_.EndOfStream)
-                                    {
-                                        Caf_ = CafReader_.ReadLine();
-                                        if (Caf_.IndexOf("Электроснабжение промышленных предприятий") >= 0)
-                                        {
-                                            NomerCaf = Caf_.Substring(Caf_.IndexOf("<a href=\"") + 9, Caf_.IndexOf("<a href=\""));
-                                            if (NomerCaf != Properties.Settings.Default.number_caf)
-                                            {
-                                                Properties.Settings.Default.number_caf = NomerCaf;
-                                                Properties.Settings.Default.Save();
-                                            }
-                                            break;
-                                        }
-                                        else if (CafReader_.EndOfStream)
-                                        {
-                                            MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nОшибка обновления!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        }
-                                    }
-                                    CafReader_.Close();
-                                    CafStream_.Close();
-                                    CafClient_.Dispose();
-                                    #endregion
-                                    #region Загрузка нового расписания
-                                    // отправка запроса на подключение к сайту 
-                                    HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + Properties.Settings.Default.number_caf + ".htm");
-                                    HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse();
-                                    Stream RaspStr = RaspRes.GetResponseStream();
-                                    StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default);
-                                    // создание каталога и файла расписания
-                                    string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
-                                    if (!Directory.Exists(path_file))
-                                        Directory.CreateDirectory(path_file);
-                                    string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
-                                    StreamWriter raspfile_write = new StreamWriter(file_rasp);
-                                    // загрузка данных с сайта и сохранение
-                                    string web_esstu = "";
-                                    web_esstu = RaspRead.ReadToEnd();
-                                    raspfile_write.WriteLine(web_esstu);
-                                    // чистка ресурсов
-                                    raspfile_write.Dispose();
-                                    RaspRead.Dispose();
-                                    RaspStr.Dispose();
-                                    RaspRes.Close();
-                                    RaspReq.Abort();
-                                    #endregion
-                                    #region Узнаем текущую неделю расписания
-                                    WebClient client = new WebClient();
-                                    Stream data = client.OpenRead("https://esstu.ru/index.htm");
-                                    StreamReader reader = new StreamReader(data);
-                                    string response2 = "";
-                                    while (!reader.EndOfStream)
-                                    {
-                                        response2 = reader.ReadLine();
-                                        if (response2.IndexOf("\"header-date\"") >= 0)
-                                        {
-                                            response2 = response2.Substring(response2.IndexOf("\"header-date\"") + 14, response2.Length - 47);
-                                            Properties.Settings.Default.number_nedel = response2;
-                                            Properties.Settings.Default.Save();
-                                            break;
-                                        }
-                                    }
-                                    reader.Dispose();
-                                    data.Dispose();
-                                    client.Dispose();
-                                    #endregion
-                                    #region Завершаем обновление
-                                    MessageBox.Show("Расписание обновлено.\nПрограмма будет перезапущена.", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    Application.Restart();
-                                    Environment.Exit(1);
-                                    #endregion
-                                }
-                            }
-                            catch (WebException)
-                            {
-                                MessageBox.Show("Пропало соединение с расписанием ВСГУТУ.\nОбновление не завершено, попробуйте позже.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                        menu_checkUpdate.Enabled = true;
+                        request_caf.Abort();
+                        UpdateTable(date);
                     }
                     #endregion
                 }
@@ -1040,6 +495,287 @@ namespace Test
             string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
             Process.Start(path_file);
         }
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        private void UpdateTable(DateTime date)
+        {
+            menu_checkUpdate.Enabled = false;
+            var question = MessageBox.Show("Обнаружено новое расписание.\nХотите обновить текущее расписание?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (question == DialogResult.Yes)
+            {
+                #region Переводим программу в режим ожидания
+                расписаниеToolStripMenuItem.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
+                graphic608.Enabled = false;
+                comboBox1.Enabled = false;
+                comboBox2.Enabled = false;
+                comboBox3.Enabled = false;
+                dataGridView1.Rows.Clear();
+                dataGridView1.Enabled = false;
+                // сохранение новой даты расписания
+                Properties.Settings.Default.date_rasp = date;
+                Properties.Settings.Default.Save();
+                #endregion
+                try
+                {
+                    HttpWebRequest test_link_ = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                    HttpWebResponse test_response_ = (HttpWebResponse)test_link_.GetResponse();
+                    if (HttpStatusCode.OK == test_response_.StatusCode)
+                    {
+                        test_response_.Close();
+                        test_link_.Abort();
+                        #region Проверяем наличие кафедры ЭСППиСХ
+                        WebClient CafClient_ = new WebClient();
+                        Stream CafStream_ = CafClient_.OpenRead("https://portal.esstu.ru/bakalavriat/craspisanEdt.htm");
+                        StreamReader CafReader_ = new StreamReader(CafStream_, System.Text.Encoding.Default);
+                        string Caf_ = "";
+                        string NomerCaf = "";
+                        while (!CafReader_.EndOfStream)
+                        {
+                            Caf_ = CafReader_.ReadLine();
+                            if (Caf_.IndexOf("Электроснабжение промышленных предприятий") >= 0)
+                            {
+                                NomerCaf = Caf_.Substring(Caf_.IndexOf("<a href=\"") + 9, Caf_.IndexOf("<a href=\""));
+                                if (NomerCaf != Properties.Settings.Default.number_caf)
+                                {
+                                    Properties.Settings.Default.number_caf = NomerCaf;
+                                    Properties.Settings.Default.Save();
+                                }
+                                break;
+                            }
+                            else if (CafReader_.EndOfStream)
+                            {
+                                MessageBox.Show("Не обнаружена кафедра ЭСППиСХ.\nОшибка обновления!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        CafReader_.Close();
+                        CafStream_.Close();
+                        CafClient_.Dispose();
+                        #endregion
+                        #region Загрузка нового расписания
+                        // отправка запроса на подключение к сайту 
+                        HttpWebRequest RaspReq = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/bakalavriat/" + Properties.Settings.Default.number_caf + ".htm");
+                        HttpWebResponse RaspRes = (HttpWebResponse)RaspReq.GetResponse();
+                        Stream RaspStr = RaspRes.GetResponseStream();
+                        StreamReader RaspRead = new StreamReader(RaspStr, System.Text.Encoding.Default);
+                        // создание каталога и файла расписания
+                        string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+                        if (!Directory.Exists(path_file))
+                            Directory.CreateDirectory(path_file);
+                        string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+                        StreamWriter raspfile_write = new StreamWriter(file_rasp);
+                        // загрузка данных с сайта и сохранение
+                        string web_esstu = "";
+                        web_esstu = RaspRead.ReadToEnd();
+                        raspfile_write.WriteLine(web_esstu);
+                        // чистка ресурсов
+                        raspfile_write.Dispose();
+                        RaspRead.Dispose();
+                        RaspStr.Dispose();
+                        RaspRes.Close();
+                        RaspReq.Abort();
+                        #endregion
+                        #region Узнаем текущую неделю расписания
+                        WebClient client = new WebClient();
+                        Stream data = client.OpenRead("https://esstu.ru/index.htm");
+                        StreamReader reader = new StreamReader(data);
+                        string response2 = "";
+                        while (!reader.EndOfStream)
+                        {
+                            response2 = reader.ReadLine();
+                            if (response2.IndexOf("\"header-date\"") >= 0)
+                            {
+                                response2 = response2.Substring(response2.IndexOf("\"header-date\"") + 14, response2.Length - 47);
+                                Properties.Settings.Default.number_nedel = response2;
+                                Properties.Settings.Default.Save();
+                                break;
+                            }
+                        }
+                        reader.Dispose();
+                        data.Dispose();
+                        client.Dispose();
+                        #endregion
+                        #region Завершаем обновление
+                        MessageBox.Show("Расписание обновлено.\nПрограмма будет перезапущена.", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Application.Restart();
+                        Environment.Exit(1);
+                        #endregion
+                    }
+                }
+                catch (WebException)
+                {
+                    MessageBox.Show("Пропало соединение с расписанием ВСГУТУ.\nОбновление не завершено, попробуйте позже.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            menu_checkUpdate.Enabled = true;
+        } // обновление расписания
+        private void RedrawTable()
+        {
+            #region Внесение базового расписания в dataGridView
+            dataGridView1.Rows.Clear();
+            dataGridView1.RowCount = 0; dataGridView1.RowCount = 7;
+            for (int i = 0; i < 7; i++)
+                dataGridView1.Rows[0].Cells[i].Style.BackColor = Color.LightSteelBlue;
+            for (int i = 1; i < 7; i++)
+            {
+                dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.LightSteelBlue;
+                dataGridView1.Rows[i].MinimumHeight = 60; // минимальная высота строки
+            }
+            dataGridView1.Rows[0].Cells[0].Value = "Время";
+            dataGridView1.Rows[0].Cells[1].Value = "09:00-10:35";
+            dataGridView1.Rows[0].Cells[2].Value = "10:45-12:20";
+            dataGridView1.Rows[0].Cells[3].Value = "13:00-14:35";
+            dataGridView1.Rows[0].Cells[4].Value = "14:45-16:20";
+            dataGridView1.Rows[0].Cells[5].Value = "16:25-18:00";
+            dataGridView1.Rows[0].Cells[6].Value = "18:05-19:40";
+            dataGridView1.Rows[1].Cells[0].Value = "Пнд";
+            dataGridView1.Rows[2].Cells[0].Value = "Втр";
+            dataGridView1.Rows[3].Cells[0].Value = "Срд";
+            dataGridView1.Rows[4].Cells[0].Value = "Чтв";
+            dataGridView1.Rows[5].Cells[0].Value = "Птн";
+            dataGridView1.Rows[6].Cells[0].Value = "Сбт";
+            #endregion
+            #region Выделяем цветом активную пару/время/день, которая идёт сейчас
+            var date_time = ""; // хранит время и день недели
+            // проверяем, соответствует ли выбранная неделя с текущей: нет - выделение отменяем; да - выделение начинаем
+            if ((comboBox2.SelectedIndex == 0 && nedely_rasp == 0) || (comboBox2.SelectedIndex == 1 && nedely_rasp == 1))
+                // выделяем текущую пару
+                for (int i = 1; i < 7; i++)
+                {
+                    date_time = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                    if (DateTime.Today.ToString("ddd") == date_time.Remove(2, 1))
+                    {
+                        dataGridView1.Rows[i].Cells[0].Style.BackColor = Color.Yellow;
+                        // выделяем текущее время дня и пары
+                        for (int j = 1; j < 7; j++)
+                        {
+                            date_time = dataGridView1.Rows[0].Cells[j].Value.ToString(); date_time = date_time.Remove(0, 6); // получаем нужный формат времени для TimeSpan
+                            if (DateTime.Now.TimeOfDay <= new TimeSpan(Convert.ToInt32(date_time.Remove(2, 3)), Convert.ToInt32(date_time.Remove(0, 3)), 0))
+                            {
+                                // если время от 0.00 и до 8.59, то пару не выделяем
+                                if (DateTime.Now.TimeOfDay < new TimeSpan(9, 0, 0))
+                                {
+                                    i = 7; // глушилка цикла 1
+                                    break; // глушилка цикла 2
+                                }
+                                // иначе, пару выделяем по текущему времени в таблице
+                                dataGridView1.Rows[0].Cells[j].Style.BackColor = Color.Yellow;
+                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Yellow;
+                                i = 7; // глушилка цикла 1
+                                break; // глушилка цикла 2
+                            }
+                        }
+                    }
+                }
+            #endregion
+            #region Составление расписания при выборе преподавателя
+            string path_file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Расписание кафедры");
+            string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
+            StreamReader rasp_reader = new StreamReader(file_rasp);
+
+            string raspstr = "";
+            while (raspstr != null)
+            {
+                raspstr = rasp_reader.ReadLine();
+                // ищем тег преподавателя в файле
+                if ((raspstr != null) && (raspstr.IndexOf("COLOR=\"#ff00ff\"> ") >= 0))
+                {
+                    // сверяем препода из файла с преподом из comboBox 
+                    if ((raspstr.Substring(raspstr.IndexOf("COLOR=\"#ff00ff\"> ") + 17, raspstr.Length - raspstr.IndexOf("COLOR=\"#ff00ff\"> ") - 28) == comboBox1.Text))
+                    {
+                        // составляем расписание препода, пока не закончилась нужная неделя
+                        while ((raspstr != null) && (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"") == -1))
+                        {
+                            raspstr = rasp_reader.ReadLine();
+                            #region 1 неделя
+                            // если выбрана 1 неделя
+                            if ((raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "1 неделя"))
+                            {
+                                while ((raspstr != null) && (raspstr != "</TR>"))
+                                {
+                                    for (int i = 1; i <= 6; i++)
+                                    {
+                                        while (raspstr.IndexOf("SIZE=2><P ALIGN=\"CENTER\">") == -1) // тег для поиска дня недели
+                                            raspstr = rasp_reader.ReadLine();
+                                        raspstr = rasp_reader.ReadLine();
+                                        for (int j = 1; j != 7; j++)
+                                        {
+                                            raspstr = rasp_reader.ReadLine();
+                                            // меняем цвет ячейки пары, если она идет в 608 ау.
+                                            if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
+                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
+                                            // если пар нет
+                                            if (raspstr.IndexOf("\">_") >= 0)
+                                                dataGridView1.Rows[i].Cells[j].Value = "-";
+                                            else // или они есть
+                                            {
+                                                #region Форматирование текста
+                                                raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\">") + 15, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\">") - 27);
+                                                raspstr = raspstr.Replace("    ", "\n"); // замена пробелов на новую строку
+                                                raspstr = raspstr.Replace("...", ""); // замена троеточия на пустой символ
+                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
+                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
+                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
+                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
+                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
+                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
+                                                #endregion
+                                                dataGridView1.Rows[i].Cells[j].Value = raspstr;
+                                            }
+                                            raspstr = rasp_reader.ReadLine();
+                                        }
+                                    }
+                                    rasp_reader.Dispose();
+                                    return;
+                                }
+                            }
+                            #endregion
+                            #region 2 неделя
+                            // если выбрана 2 неделя
+                            if ((raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") >= 0) && (comboBox2.SelectedItem.ToString() == "2 неделя"))
+                            {
+                                while ((raspstr != null) && (raspstr != "</TR>"))
+                                {
+                                    for (int i = 1; i <= 6; i++)
+                                    {
+                                        while (raspstr.IndexOf("SIZE=2 COLOR=\"#0000ff\"><P ALIGN=\"CENTER\">") == -1)
+                                            raspstr = rasp_reader.ReadLine();
+                                        raspstr = rasp_reader.ReadLine();
+                                        for (int j = 1; j != 7; j++)
+                                        {
+                                            raspstr = rasp_reader.ReadLine();
+                                            if ((raspstr.IndexOf("а.608") >= 0) && (dataGridView1.Rows[i].Cells[j].Style.BackColor != Color.Yellow))
+                                                dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.LightSkyBlue;
+                                            if (raspstr.IndexOf("\"> _") >= 0)
+                                                dataGridView1.Rows[i].Cells[j].Value = "-";
+                                            else
+                                            {
+                                                #region Форматирование текста
+                                                raspstr = raspstr.Substring(raspstr.IndexOf("ALIGN=\"CENTER\"> ") + 16, raspstr.Length - raspstr.IndexOf("ALIGN=\"CENTER\"> ") - 28);
+                                                raspstr = raspstr.Replace("    ", "\n");
+                                                raspstr = raspstr.Replace("...", "");
+                                                raspstr = raspstr.Trim(); // убираем лишние пробелы в строке
+                                                raspstr = raspstr.Replace("пр.", "\n-практика-\n");
+                                                raspstr = raspstr.Replace("лаб.", "\n-лабораторная-\n");
+                                                raspstr = raspstr.Replace("лек.", "\n-лекция-\n");
+                                                if (raspstr.IndexOf("-\n") >= 0) // отсекаем лишний текст после типа пары
+                                                    raspstr = raspstr.Substring(0, raspstr.Length - (raspstr.Length - raspstr.IndexOf("-\n") - 1));
+                                                #endregion
+                                                dataGridView1.Rows[i].Cells[j].Value = raspstr;
+                                            }
+                                            raspstr = rasp_reader.ReadLine();
+                                        }
+                                    }
+                                    rasp_reader.Dispose();
+                                    return;
+                                }
+                            }
+                            #endregion
+                        }
+                    }
+                }
+            }
+            #endregion
+        } // перерисовка таблицы расписания
     }
 }
 
@@ -1050,3 +786,4 @@ namespace Test
 // Сделать отображение последних изменений в расписании. Чтобы видеть разницу ДО и ПОСЛЕ
 // Поправить запуск ворда (место его запуска)
 // Подумать над обновление расписания без перезапуска проги
+// Прога запускается первый раз с ошибкой
