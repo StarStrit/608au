@@ -51,6 +51,7 @@ namespace Test
                 try
                 {
                     HttpWebRequest test_link = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                    test_link.Timeout = 1000;
                     HttpWebResponse test_response = (HttpWebResponse)test_link.GetResponse(); // проверка соединения с сайтом ВСГУТУ
                     if (HttpStatusCode.OK == test_response.StatusCode) // если соединение установлено
                     {
@@ -208,8 +209,8 @@ namespace Test
                 string file_rasp = Path.Combine(path_file, Properties.Settings.Default.date_rasp.ToString("dd.MM.yyyy") + ".txt");
                 if (!Directory.Exists(path_file) | !File.Exists(file_rasp))
                 {
-                    MessageBox.Show("Внимание, данные пропали!\n\n" +
-                        "Скорей всего они были случайно удалены/повреждены или Вы открываете программу первый раз, но не переживайте.\n" +
+                    MessageBox.Show("Внимание, расписание не обнаружено на вашем компьютере!\n\n" +
+                        "Скорей всего они были случайно удалены/повреждены или это просто первый запуск приложения, но не переживайте.\n" +
                         "Будет произведён автоматический сброс параметров и программа перезапустится.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Properties.Settings.Default.starter = 0;
                     Properties.Settings.Default.Save();
@@ -433,6 +434,7 @@ namespace Test
             try
             {
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                request.Timeout = 1000;
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (HttpStatusCode.OK == response.StatusCode)
                 {
@@ -518,6 +520,7 @@ namespace Test
                 try
                 {
                     HttpWebRequest test_link_ = (HttpWebRequest)WebRequest.Create("https://portal.esstu.ru/raspisan.htm");
+                    test_link_.Timeout = 2000;
                     HttpWebResponse test_response_ = (HttpWebResponse)test_link_.GetResponse();
                     if (HttpStatusCode.OK == test_response_.StatusCode)
                     {
